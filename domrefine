@@ -1,0 +1,124 @@
+#!/bin/bash
+
+# Usage: domrefine [OPTION] CLUSTER_FILE SEQ_DB
+# -q QUEUE
+# -n MAX_JOBS
+# -c CACH_DIR
+# -p PROGRAM : alignment program (default: clustal omega 1.2)
+# -P PROJECT_NAME
+# -a : save final alignment (default: off)
+# -t : save final tree (default: off)
+# -O : save final tree in o11 format (default: off)
+# -N : save final tree in Newick format (default: off)
+# -s : save final status (default: off)
+# -r : recursive merge
+# -M : skip merge_test
+# -F : fast merge
+# -C : skip create boundary
+
+# -H homology_dir
+# -Q large_queue
+# -f FastTreeMP
+# -A archive_prefix
+
+export DOMREFINE_DIR=$(dirname $0)
+
+if [ -e "$DOMREFINE_DIR/bin" ] &&  [ -e "$DOMREFINE_DIR/bin_dev" ] &&  [ -e "$DOMREFINE_DIR/lib" ] &&  [ -e "$DOMREFINE_DIR/pm" ]; then
+
+    export PATH=$DOMREFINE_DIR:$DOMREFINE_DIR/bin:$DOMREFINE_DIR/bin_dev:$DOMREFINE_DIR/lib:$PATH
+    export PERL5LIB=$DOMREFINE_DIR/pm:$PERL5LIB
+
+    export DOMREFINE_READ_ALIGNMENT_CACHE=1
+    export DOMREFINE_WRITE_ALIGNMENT_CACHE=1
+    export DOMREFINE_READ_TREE_CACHE=1
+    export DOMREFINE_WRITE_TREE_CACHE=1
+    export DOMREFINE_ALIGNER=clustalo1.2order # overwritten by -p ; the aligner is executed in pm/DomRefine/Align.pm
+    export DOMREFINE_PROJECT_NAME=domrefine # overwritten by -P
+    export DOMREFINE_SAVE_ALIGNMENT=0 # overwritten by -a
+    export DOMREFINE_SAVE_TREE=0 # overwritten by -t
+    export DOMREFINE_SAVE_O11=0 # overwritten by -O
+    export DOMREFINE_SAVE_NEWICK=0 # overwritten by -N
+    export DOMREFINE_SAVE_ARCHIVE= # overwritten by -A
+    export DOMREFINE_SAVE_STATUS=0 # overwritten by -s
+    export DOMREFINE_SKIP_MERGE_TEST=0 # overwritten by -M
+    export DOMREFINE_FAST_MERGE=0 # overwritten by -F
+    export DOMREFINE_RECURSIVE_MERGE=0 # overwritten by -r
+    export DOMREFINE_CREATE_BOUNDARY=1 # overwritten by -C
+    export DOMREFINE_IGNORE_LARGEST_CLUSTER=0
+    export DOMREFINE_QUEUE= # overwritten by -q
+    export DOMREFINE_QUEUE_SIZE=100 # overwritten by -n
+    export DOMREFINE_QUEUE_CHECK_INTERVAL=10
+    export DOMREFINE_QSUB_UNIT=10 # overwritten by -u
+    export DOMREFINE_QSUB_OPT=''
+    export DOMREFINE_LARGE_QUEUE=smpl # overwritten by -Q
+    if [ -d "cache" ]; then
+	export DOMREFINE_CACHE=$(pwd)/cache # overwritten by CURRENT_DIR or -c
+    else
+	export DOMREFINE_CACHE=$HOME/tmp/cache # overwritten by CURRENT_DIR or -c
+    fi
+    export DOMREFINE_CACHE_FORCE_CREATE=$(pwd)/cache # overwritten by -c
+    export DOMREFINE_CACHE_STEPWISE_MERGE=$(pwd)/cache_stepwise_merge
+    export DOMREFINE_QSUB_TMP=$HOME/tmp/sge # overwritten below
+    export DOMREFINE_TMP=$HOME/tmp # overwritten below
+    export DOMREFINE_SEQ_DB="/db/project/MBGD/database/bldb" # overwritten by $2
+    export DOMREFINE_HOMOLOGY_DIR="/db/project/MBGD/database.work/bldp" # overwritten by -H
+    export DOMREFINE_TREE=FastTree # overwritten by -f ; the program is executed in pm/DomRefine/Tree.pm
+    export DOMREFINE_ENDPOINT=nibbtest
+    
+    while getopts "q:n:u:c:p:P:atONsrMFCH:Q:f:A:" opt; do
+	case $opt in
+	    q ) DOMREFINE_QUEUE=$OPTARG;;
+	    n ) DOMREFINE_QUEUE_SIZE=$OPTARG;;
+	    u ) DOMREFINE_QSUB_UNIT=$OPTARG;;
+	    c ) DOMREFINE_CACHE=$OPTARG; DOMREFINE_CACHE_FORCE_CREATE=$OPTARG;;
+	    p ) DOMREFINE_ALIGNER=$OPTARG;;
+	    P ) DOMREFINE_PROJECT_NAME=$OPTARG;;
+	    a ) DOMREFINE_SAVE_ALIGNMENT=1;;
+	    t ) DOMREFINE_SAVE_TREE=1;;
+	    O ) DOMREFINE_SAVE_O11=1;;
+	    N ) DOMREFINE_SAVE_NEWICK=1;;
+	    s ) DOMREFINE_SAVE_STATUS=1;;
+	    r ) DOMREFINE_RECURSIVE_MERGE=1;;
+	    M ) DOMREFINE_SKIP_MERGE_TEST=1;;
+	    F ) DOMREFINE_FAST_MERGE=1;;
+	    C ) DOMREFINE_CREATE_BOUNDARY=0;;
+	    H ) DOMREFINE_HOMOLOGY_DIR=$OPTARG;;
+	    Q ) DOMREFINE_LARGE_QUEUE=$OPTARG;;
+	    f ) DOMREFINE_TREE=$OPTARG;;
+	    A ) DOMREFINE_SAVE_ARCHIVE=$OPTARG;;
+	esac
+    done
+    shift $(($OPTIND - 1))
+
+    if (( $# == 1 )); then
+	command $1
+    elif (( $# == 2 )); then
+	# settings
+	export DOMREFINE_SEQ_DB=$2
+	export DOMREFINE_CACHE=$DOMREFINE_CACHE_FORCE_CREATE # overwrite
+	export DOMREFINE_TMP=$(pwd)/tmp # overwrite (under current directory)
+	export DOMREFINE_QSUB_TMP=$(pwd)/sge # overwrite (under current directory)
+
+	# output parameters
+	domrefine_log="domrefine.log"
+	env | grep '^DOMREFINE_' >> $domrefine_log
+
+	# preparation of directories
+	if [ ! -e "$DOMREFINE_TMP" ]; then
+	    mkdir $DOMREFINE_TMP
+	fi
+	if [ ! -e "$DOMREFINE_QSUB_TMP" ]; then
+	    mkdir $DOMREFINE_QSUB_TMP
+	fi
+
+	# main
+	if [ -s "$1" ]; then
+	    domrefine.pipeline.pl $1 2>> $domrefine_log
+	fi
+
+	if [ "$DOMREFINE_SAVE_STATUS" = "1" ]; then
+	    domrefine.stat.pl > domrefine.stat 2>> $domrefine_log
+	    domrefine.time.pl > domrefine.time 2>> $domrefine_log
+	fi
+    fi
+fi
