@@ -30,5 +30,5 @@ if ($OPT{d}) {
 } elsif ($OPT{c}) {
     print renumber_cluster($DCLST);
 } else {
-    print re_number_domains($DCLST);
+    print renumber_concat_domains($DCLST);
 }

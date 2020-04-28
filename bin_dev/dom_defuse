@@ -62,14 +62,14 @@ for my $geneset (keys %DOMAIN) {
     }
 }
 
-$DCLST = re_number_domains_without_concat($DCLST);
+$DCLST = renumber_domains_without_concat($DCLST);
 print $DCLST;
 
 ################################################################################
 ### Functions ##################################################################
 ################################################################################
 
-sub re_number_domains_without_concat {
+sub renumber_domains_without_concat {
     my ($dclst) = @_;
 
     # parse

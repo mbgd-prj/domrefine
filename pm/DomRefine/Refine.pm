@@ -3,7 +3,7 @@ use Exporter;
 @ISA = qw(Exporter);
 @EXPORT = qw(merge_all partial_move
 	     get_adjacency_information_detail get_adjacency_information get_adjacent_organism
-	     renumber_domain renumber_cluster re_number_domains assign_new_domain_number
+	     renumber_domain renumber_cluster renumber_concat_domains assign_new_domain_number
 	     get_patterns
 	     get_patterns_detail
 	     print_in_simple_text
@@ -134,7 +134,7 @@ sub renumber_cluster {
     return $out;
 }
 
-sub re_number_domains {
+sub renumber_concat_domains {
     my ($dclst) = @_;
 
     # parse
@@ -188,7 +188,7 @@ sub assign_new_domain_number {
     }
 }
 
-# sub re_number_domains {
+# sub renumber_concat_domains {
 #     my ($dclst) = @_;
 
 #     # parse

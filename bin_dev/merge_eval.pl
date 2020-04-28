@@ -36,7 +36,7 @@ while (my $line = <STDIN>) {
     print STDERR "before:\n";
     my @before = dom_eval($dclst_part, \%REFERENCE_DOMAIN);
     print STDERR "after:\n";
-    my @after = dom_eval(re_number_domains(merge_all($dclst_part)), \%REFERENCE_DOMAIN);
+    my @after = dom_eval(renumber_concat_domains(merge_all($dclst_part)), \%REFERENCE_DOMAIN);
 
     if ($before[0]) {
 	my $change = ($after[1] - $before[1]) / $before[0];
