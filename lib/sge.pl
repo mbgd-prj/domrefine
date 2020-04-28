@@ -23,11 +23,19 @@ getopts('q:N:l:', \%OPT);
 @ARGV == 0 and die $USAGE;
 
 my $JOB_NAME = $OPT{N} || $PROGRAM;
+$JOB_NAME = substr($JOB_NAME, 0, 100); # trancate for filename and jobname
 
 ### Create temporary script ###
 my $TMP_SCRIPT = "$ENV{DOMREFINE_QSUB_TMP}/$ENV{HOSTNAME}.$$.$PROGRAM.$JOB_NAME.sh";
+# my $TMP_SCRIPT = "$ENV{DOMREFINE_QSUB_TMP}/$ENV{HOSTNAME}.$$.$PROGRAM.sh";
 open(SCRIPT, ">$TMP_SCRIPT") || die "Cannot open $TMP_SCRIPT";
-print SCRIPT '#$ -S /bin/sh', "\n";
+if ($ENV{DOMREFINE_QUEUE_SYSTEM} eq "SGE") {
+    print SCRIPT '#$ -S /bin/sh', "\n";
+} elsif ($ENV{DOMREFINE_QUEUE_SYSTEM} eq "PBS") {
+    print SCRIPT '#PBS -S /bin/sh', "\n";
+} else {
+    die;
+}
 print SCRIPT "@ARGV\n";
 close(SCRIPT);
 

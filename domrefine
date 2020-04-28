@@ -45,6 +45,7 @@ if [ -e "$DOMREFINE_DIR/bin" ] &&  [ -e "$DOMREFINE_DIR/bin_dev" ] &&  [ -e "$DO
     export DOMREFINE_RECURSIVE_MERGE=0 # overwritten by -r
     export DOMREFINE_CREATE_BOUNDARY=1 # overwritten by -C
     export DOMREFINE_IGNORE_LARGEST_CLUSTER=0
+    export DOMREFINE_QUEUE_SYSTEM=PBS # SGE or PBS
     export DOMREFINE_QUEUE= # overwritten by -q
     export DOMREFINE_QUEUE_SIZE=100 # overwritten by -n
     export DOMREFINE_QUEUE_CHECK_INTERVAL=10

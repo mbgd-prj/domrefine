@@ -38,7 +38,7 @@ if (@ARGV != 1) {
 }
 my @submitted_job = ();
 for my $line (`cat $ARGV[0]`) {
-    if ($line =~ /^Your job (\d+) /) {
+    if ($line =~ /^Your job (\d+) / or $line =~ /^(\d+)\.\S+/) { # SGE or PBS
 	my $job_id = $1;
 	push @submitted_job, $job_id;
     }
@@ -54,9 +54,9 @@ while (1) {
     my @header = ();
     my @line = `qstat`;
     for my $line (@line) {
-	if ($line =~ /^\s*(\d+)\s+\S+\s+(\S+)\s/) {
+	if ($line =~ /^\s*(\d+)(\s+|\.)\S+\s+(\S+)\s/) { # SGE or PBS
 	    my $job_id = $1;
-	    my $job_name = $2;
+	    my $job_name = $3;
 	    if (grep {/^$job_id$/} @submitted_job) {
 		push @jobs_in_queue, $line;
 		push @ids_in_queue, $job_id;

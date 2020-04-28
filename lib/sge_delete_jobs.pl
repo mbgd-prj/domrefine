@@ -20,7 +20,7 @@ my $QSUB_LOG = shift @ARGV;
 ### list of jobs
 my @SUBMITTED_JOB = ();
 for my $line (`cat $QSUB_LOG`) {
-    if ($line =~ /^Your job (\d+) /) {
+    if ($line =~ /^Your job (\d+) / or $line =~ /^(\d+)\.\S+/) { # SGE or PBS
 	my $job_id = $1;
 	push @SUBMITTED_JOB, $job_id;
     }
