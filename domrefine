@@ -15,6 +15,7 @@
 # -M : skip merge_test
 # -F : fast merge
 # -C : skip create boundary
+# -R : align by region (default: off) 
 
 # -H homology_dir
 # -Q large_queue
@@ -44,6 +45,7 @@ if [ -e "$DOMREFINE_DIR/bin" ] &&  [ -e "$DOMREFINE_DIR/bin_dev" ] &&  [ -e "$DO
     export DOMREFINE_FAST_MERGE=0 # overwritten by -F
     export DOMREFINE_RECURSIVE_MERGE=0 # overwritten by -r
     export DOMREFINE_CREATE_BOUNDARY=1 # overwritten by -C
+    export DOMREFINE_ALIGN_REGION=0 # overwritten by -R
     export DOMREFINE_IGNORE_LARGEST_CLUSTER=0
     export DOMREFINE_QUEUE_SYSTEM=PBS # SGE or PBS
     export DOMREFINE_QUEUE= # overwritten by -q
@@ -66,7 +68,7 @@ if [ -e "$DOMREFINE_DIR/bin" ] &&  [ -e "$DOMREFINE_DIR/bin_dev" ] &&  [ -e "$DO
     export DOMREFINE_TREE=FastTree # overwritten by -f ; the program is executed in pm/DomRefine/Tree.pm
     export DOMREFINE_ENDPOINT=nibbtest
     
-    while getopts "q:n:u:c:p:P:atONsrMFCH:Q:f:A:" opt; do
+    while getopts "q:n:u:c:p:P:atONsrMFCRH:Q:f:A:" opt; do
 	case $opt in
 	    q ) DOMREFINE_QUEUE=$OPTARG;;
 	    n ) DOMREFINE_QUEUE_SIZE=$OPTARG;;
@@ -83,6 +85,7 @@ if [ -e "$DOMREFINE_DIR/bin" ] &&  [ -e "$DOMREFINE_DIR/bin_dev" ] &&  [ -e "$DO
 	    M ) DOMREFINE_SKIP_MERGE_TEST=1;;
 	    F ) DOMREFINE_FAST_MERGE=1;;
 	    C ) DOMREFINE_CREATE_BOUNDARY=0;;
+	    R ) DOMREFINE_ALIGN_REGION=1;;
 	    H ) DOMREFINE_HOMOLOGY_DIR=$OPTARG;;
 	    Q ) DOMREFINE_LARGE_QUEUE=$OPTARG;;
 	    f ) DOMREFINE_TREE=$OPTARG;;
