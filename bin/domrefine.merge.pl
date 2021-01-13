@@ -156,14 +156,25 @@ sub merge {
 	my $sp_list = join(",", @sp);
 	my $pwd = `pwd`;
 	chomp($pwd);
-	my $homology_dir = $ENV{DOMREFINE_HOMOLOGY_DIR} || die;
-	if ($homology_dir !~ /^\//) {
-	    $homology_dir = "$pwd/$homology_dir";
-	}
 	my $large_queue = $ENV{DOMREFINE_LARGE_QUEUE} || "smpl";
-	my $select_command = "/db/project/MBGD/WWW/bin/select.pl -DIR=$homology_dir -SPEC=$sp_list -EVAL=0.001 -SCORE=60 -tabout";
 	my $stepwise_merge_command = "dom_merge_stepwise -r 0 -R 0.2 -l $pwd/${tmp_cluster}.link.to_merge $pwd/${tmp_cluster}";
-	my $command = "sge.pl -N merge -q $large_queue '$select_command 2> $pwd/${tmp_cluster}.tabout.log | $stepwise_merge_command > $pwd/${tmp_cluster}.merge.out 2> $pwd/${tmp_cluster}.merge.log'";
+	my $command;
+	if ($ENV{DOMREFINE_HOMOLOGY_INFO}) {
+	    my $homology_info = $ENV{DOMREFINE_HOMOLOGY_INFO};
+	    if ($homology_info !~ /^\//) {
+		$homology_info = "$pwd/$homology_info";
+	    }
+	    $command = "sge.pl -N merge -q $large_queue 'cat $homology_info | $stepwise_merge_command > $pwd/${tmp_cluster}.merge.out 2> $pwd/${tmp_cluster}.merge.log'";
+	} elsif ($ENV{DOMREFINE_HOMOLOGY_DIR}) {
+	    my $homology_dir = $ENV{DOMREFINE_HOMOLOGY_DIR};
+	    if ($homology_dir !~ /^\//) {
+		$homology_dir = "$pwd/$homology_dir";
+	    }
+	    my $select_command = "source /db/project/MBGD/etc/profile.mbgd && /db/project/MBGD/WWW/bin/select.pl -DIR=$homology_dir -SPEC=$sp_list -EVAL=0.001 -SCORE=60 -tabout";
+	    $command = "sge.pl -N merge -q $large_queue '$select_command 2> $pwd/${tmp_cluster}.tabout.log | $stepwise_merge_command > $pwd/${tmp_cluster}.merge.out 2> $pwd/${tmp_cluster}.merge.log'";
+	} else {
+	    die;
+	}
 	open(MERGE_COMMAND, ">$pwd/${tmp_cluster}.merge.command") || die;
 	print MERGE_COMMAND "$command\n";
 	close(MERGE_COMMAND);
