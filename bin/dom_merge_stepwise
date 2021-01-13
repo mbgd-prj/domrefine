@@ -44,7 +44,6 @@ if (! -t) {
 	}
 	my ($gene1, $gene2, $start1, $end1, $start2, $end2, $pam, $score) = @f;
 	put_homology_in_hash(\%HOM, $gene1, $gene2, $start1, $end1, $start2, $end2, $pam, $score);
-	put_homology_in_hash(\%HOM, $gene2, $gene1, $start2, $end2, $start1, $end1, $pam, $score);
 	$count ++;
 	if ($count % 1000000 == 0) {
 	    print STDERR ".";
