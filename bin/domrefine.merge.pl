@@ -43,7 +43,9 @@ if (defined $OPT{t}) {
 }
 
 my $MERGE_TEST = "dom_merge_test_c";
-# $MERGE_TEST .= " -r"; # align by region
+if($ENV{DOMREFINE_ALIGN_REGION}){
+   $MERGE_TEST .= " -r"; # align by region
+}
 if (defined $OPT{e}) {
     $MERGE_TEST .= " -e $OPT{e}";
 }
