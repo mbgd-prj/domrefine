@@ -992,7 +992,6 @@ sub read_homology_data {
 	my ($gene1, $gene2, $start1, $end1, $start2, $end2, $pam, $score) = @f;
 	if (defined $score) {
 	    put_homology_in_hash($r_hom, $gene1, $gene2, $start1, $end1, $start2, $end2, $pam, $score);
-	    put_homology_in_hash($r_hom, $gene2, $gene1, $start2, $end2, $start1, $end1, $pam, $score);
 	} else {
 	    print STDERR;
 	}
