@@ -174,7 +174,7 @@ sub merge {
 	system "sge_check_jobs.pl -N -n0 $pwd/${tmp_cluster}.merge.job > $pwd/${tmp_cluster}.merge.job.check";
 	system "cat ${tmp_cluster}.merge.log | grep '^MERGED: ' | perl -pe 's/^MERGED: //' | links_to_clustersets.pl -n | sort -k1,1nr > ${tmp_cluster}.clusterset.merged";
     }
-    system "cat ${tmp_cluster}.merge.out | dom_renumber > ${tmp_cluster}.merge.out.renumber";
+    system "cat ${tmp_cluster}.merge.out | dom_renumber | dom_renumber -c > ${tmp_cluster}.merge.out.renumber";
 
     $end_time = time;
     printf STDERR "post:\t%.2f\tmin\n", ($end_time - $start_time)/60;
