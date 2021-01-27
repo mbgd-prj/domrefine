@@ -60,7 +60,7 @@ sub aligner {
     }
 
     my ($n_seq, $n_aa, $mean_len) = seq_file_stat($seq_file);
-    my $expected_time = $n_seq * log($n_seq) * $mean_len ** 2 * 8 / 10000000;
+    my $expected_time = $n_seq * log($n_seq) * $mean_len ** 2 * 4 / 10000000;
     printf STDERR "$aligner: n_seq=$n_seq n_aa=$n_aa mean_len=%.1f exp_time=%.1f ", $mean_len, $expected_time;
     my $start_time = time;
 
