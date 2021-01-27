@@ -537,7 +537,8 @@ sub check_merge_by_hom {
 	    } elsif ($gene1 eq $gene2) {
 	    } else {
 		$count_all ++;
-		if (overlap_domain_hom($gene1, $gene2, $r_hom, $r_member, $cluster1, $cluster2, %opt)) {
+		if (overlap_domain_hom($gene1, $gene2, $r_hom, $r_member, $cluster1, $cluster2, %opt) ||
+            overlap_domain_hom($gene2, $gene1, $r_hom, $r_member, $cluster1, $cluster2, %opt)) {
 		    $count_homology ++;
 		}
 	    }
@@ -751,10 +752,17 @@ sub check_merge_by_hom_mysql {
 sub overlap_domain_hom {
     my ($gene1, $gene2, $r_hom, $r_member, $cluster1, $cluster2, %opt) = @_;
 
-    if (defined ${$r_hom}{$gene1}{$gene2}) {
+    # if (defined ${$r_hom}{$gene1}{$gene2}) {
+    if (defined ${$r_hom}{"$gene1 $gene2"}) {
 	if (defined $opt{r}) {
-	    my ($start1, $end1) = (${$r_hom}{$gene1}{$gene2}{start1}, ${$r_hom}{$gene1}{$gene2}{end1});
-	    my ($start2, $end2) = (${$r_hom}{$gene1}{$gene2}{start2}, ${$r_hom}{$gene1}{$gene2}{end2});
+	    # my ($start1, $end1) = (${$r_hom}{$gene1}{$gene2}{start1}, ${$r_hom}{$gene1}{$gene2}{end1});
+	    # my ($start2, $end2) = (${$r_hom}{$gene1}{$gene2}{start2}, ${$r_hom}{$gene1}{$gene2}{end2});
+        # my $start_end = ${$r_hom}{$gene1}{$gene2};
+        my $start_end = ${$r_hom}{"$gene1 $gene2"};
+        my ($start1, $end1, $start2, $end2);
+        if ($start_end =~ /^start1:(\S+) end1:(\S+) start2:(\S+) end2:(\S+)$/) {
+            ($start1, $end1, $start2, $end2) = ($1, $2, $3, $4);
+        }
 	    my $overlap_gene1 = check_overlap_with_clusters($start1, $end1, $r_member, $cluster1, $cluster2, $gene1, %opt);
 	    my $overlap_gene2 = check_overlap_with_clusters($start2, $end2, $r_member, $cluster1, $cluster2, $gene2, %opt);
 	    # print STDERR "$gene1\t$gene2\t$start1\t$end1\t$start2\t$end2\n";
