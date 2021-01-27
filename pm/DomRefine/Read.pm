@@ -570,12 +570,14 @@ sub calc_total_aa {
 }
 
 sub read_seq {
-    my ($r_seq, $r_gene) = @_;
+    my ($r_seq, $r_gene, $blastdbcmd) = @_;
 
     my %seq_to_read = ();
+    my $gene_cnt = 0 ;
     for my $gene (@{$r_gene}) {
 	my ($sp, $name) = decompose_gene_id($gene);
 	$seq_to_read{$sp}{$gene} = 1;
+        $gene_cnt++;
     }
 
     unless ($ENV{DOMREFINE_SEQ_DB} and $ENV{DOMREFINE_SEQ_DB} ne "") {
@@ -586,6 +588,28 @@ sub read_seq {
     my $start_time = time;
     if (-f $ENV{DOMREFINE_SEQ_DB}) {
 	print STDERR " read $ENV{DOMREFINE_SEQ_DB} ..\n";
+
+      #2020.11.30##if($blastdbcmd){
+      #blastcmd - makeblastdb
+      $blastdbcmd=1; #2020.12.5 temporary change
+      if($blastdbcmd && $gene_cnt < 5000){
+       if (!-e "$ENV{DOMREFINE_SEQ_DB}.pal"){
+         my $cmd="/bio/bin/makeblastdb -dbtype prot -hash_index -parse_seqids $ENV{DOMREFINE_SEQ_DB}";
+	 system($cmd);
+       }
+
+       for my $gene (@{$r_gene}) {
+	 my ($sp, $name) = decompose_gene_id($gene);
+         #my $cmd="/bio/bin/blastdbcmd -outfmt '%s' -entry $gene -db $ENV{DOMREFINE_SEQ_DB}";
+         #2.11.0では処理速度が遅くなるので、versionを指定
+         my $cmd="/bio/package/blast+/2.10.1/bin/blastdbcmd -outfmt '%s' -entry $gene -db $ENV{DOMREFINE_SEQ_DB}";
+         my $tmpout=`$cmd`;
+         $tmpout=~s/\r\n|\r|\n//g;
+	 ${$r_seq}{$sp}{$gene} = $tmpout;
+       }
+      }
+      else{
+
 	open(BLDB, "$ENV{DOMREFINE_SEQ_DB}") || die;
 	my $read_flg = 0;
 	my $gene;
@@ -616,6 +640,9 @@ sub read_seq {
 	    }
 	}
 	close(BLDB);
+
+      }
+
     } elsif (-d $ENV{DOMREFINE_SEQ_DB}) {
 	print STDERR " read directory $ENV{DOMREFINE_SEQ_DB} ..\n";
 	for my $organism (keys %seq_to_read) {
