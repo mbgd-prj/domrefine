@@ -1029,16 +1029,20 @@ sub read_homology_data {
 sub put_homology_in_hash {
     my ($r_hom, $gene1, $gene2, $start1, $end1, $start2, $end2, $pam, $score) = @_;
 
-    if (defined ${$r_hom}{$gene1}{$gene2}) {
+    # if (defined ${$r_hom}{$gene1}{$gene2}) {
+    if (defined ${$r_hom}{"$gene1 $gene2"}) {
 	die;
     }
 
-    ${$r_hom}{$gene1}{$gene2}{start1} = $start1;
-    ${$r_hom}{$gene1}{$gene2}{end1} = $end1;
-    ${$r_hom}{$gene1}{$gene2}{start2} = $start2;
-    ${$r_hom}{$gene1}{$gene2}{end2} = $end2;
-    ${$r_hom}{$gene1}{$gene2}{pam} = $pam;
-    ${$r_hom}{$gene1}{$gene2}{score} = $score;
+    # ${$r_hom}{$gene1}{$gene2}{start1} = $start1;
+    # ${$r_hom}{$gene1}{$gene2}{end1} = $end1;
+    # ${$r_hom}{$gene1}{$gene2}{start2} = $start2;
+    # ${$r_hom}{$gene1}{$gene2}{end2} = $end2;
+    # ${$r_hom}{$gene1}{$gene2}{pam} = $pam;
+    # ${$r_hom}{$gene1}{$gene2}{score} = $score;
+
+    # ${$r_hom}{$gene1}{$gene2} = "start1:$start1 end1:$end1 start2:$start2 end2:$end2";
+    ${$r_hom}{"$gene1 $gene2"} = "start1:$start1 end1:$end1 start2:$start2 end2:$end2";
 }
 
 ################################################################################
