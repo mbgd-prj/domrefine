@@ -239,23 +239,23 @@ sub reroot_with_bootstrap {
     $tree->set_root_node($new_root);
 
     ### copy IDs (bootstrap values) between the new children ###
-    my @new_child = $new_root->each_Descendent;
-    if (@new_child != 2) {
-    	die scalar(@new_child);
-    }
+    # my @new_child = $new_root->each_Descendent;
+    # if (@new_child != 2) {
+    # 	die scalar(@new_child);
+    # }
 
-    my $new_second_child;
-    if ($new_child[0] eq $new_first_child and $new_child[1] ne $new_first_child) {
-	$new_second_child = $new_child[1];
-    } elsif ($new_child[0] ne $new_first_child and $new_child[1] eq $new_first_child) {
-	$new_second_child = $new_child[0];
-    } else {
-	die;
-    }
+    # my $new_second_child;
+    # if ($new_child[0] eq $new_first_child and $new_child[1] ne $new_first_child) {
+	# $new_second_child = $new_child[1];
+    # } elsif ($new_child[0] ne $new_first_child and $new_child[1] eq $new_first_child) {
+	# $new_second_child = $new_child[0];
+    # } else {
+	# die;
+    # }
 
-    if (! $new_second_child->is_Leaf) {
-	$new_first_child->id($new_second_child->id);
-    }
+    # if (! $new_second_child->is_Leaf) {
+	# $new_first_child->id($new_second_child->id);
+    # }
 
 }
 
