@@ -35,6 +35,7 @@ my ($CLUSTER_INPUT) = @ARGV;
 ### Read homology data ###
 my ($DBH, $DBH_ACCUM) = (get_dbh("mbgd"), get_dbh("mbgd_accum")) if $OPT{H};
 my %HOM = (); # This may consume large memory
+dbmopen(%HOM, "homfile", 0644) || die; # use DBM
 if (! -t) {
     my $count = 0;
     while (<STDIN>) {
@@ -54,6 +55,7 @@ if (! -t) {
     }
     print STDERR "\n\n";
 }
+dbmclose(%HOM);
 
 ### Read clusters ###
 my %CLUSTER_MEMBERS_TXT = ();
@@ -65,6 +67,7 @@ my %OLD2NEW_CLUSTER = ();
 my %NEW2OLD_CLUSTER = ();
 
 open(LINK, "$LINK") || die;
+dbmopen(%HOM, "homfile", 0644) || die; # use DBM
 while (<LINK>) {
     chomp;
     my @original_cluster = split(/[-,\s]/, $_);
@@ -101,6 +104,7 @@ while (<LINK>) {
     }
 }
 close(LINK);
+dbmclose(%HOM);
 
 output_cluster_members(\%CLUSTER_MEMBERS_TXT);
 
