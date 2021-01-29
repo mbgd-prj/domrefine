@@ -79,7 +79,7 @@ while (my $line = <STDIN>) {
 	if ($COUNT % $ENV{DOMREFINE_QSUB_UNIT} == 0) {
 	    check_queue();
 	}
-	my $submitted_job = `sge.pl $QUEUE -N s$cluster_set '$get_dclst | $SCRIPT > $OUT_DIR/$PREFIX${cluster_set}.out 2> $OUT_DIR/$PREFIX${cluster_set}.log'`;
+	my $submitted_job = `sge.pl $QUEUE -N s$cluster_set 'echo "$cluster_set" 1>&2;$get_dclst | $SCRIPT > $OUT_DIR/$PREFIX${cluster_set}.out 2> $OUT_DIR/$PREFIX${cluster_set}.log'`;
 	print SUBMITTED_JOBS $submitted_job;
 	$COUNT ++;
     }
