@@ -83,15 +83,15 @@ sub aligner {
 	system "muscle -in $seq_file -out $alignment_file 2> $alignment_file.err";
 	# system "muscle -stable -in $seq_file -out $alignment_file 2> $alignment_file.err";
     } elsif ($aligner eq "clustalo1.1") {
-	system "clustalo-1.1.0-linux-64 --auto -i $seq_file -o $alignment_file -l $alignment_file.err --force -v -v";
+	system "clustalo-1.1.0-linux-64 --auto -i $seq_file -o $alignment_file -l $alignment_file.err --threads=4 --force -v -v";
     } elsif ($aligner eq "clustalo1.2") {
-	system "clustalo-1.2.0-Ubuntu-x86_64 --auto -i $seq_file -o $alignment_file -l $alignment_file.err --force -v -v";
+	system "clustalo-1.2.0-Ubuntu-x86_64 --auto -i $seq_file -o $alignment_file -l $alignment_file.err --threads=4 --force -v -v";
     } elsif ($aligner eq "clustalo1.2kimura") {
-	system "clustalo-1.2.0-Ubuntu-x86_64 --auto -i $seq_file -o $alignment_file -l $alignment_file.err --force -v -v --use-kimura";
+	system "clustalo-1.2.0-Ubuntu-x86_64 --auto -i $seq_file -o $alignment_file -l $alignment_file.err --threads=4 --force -v -v --use-kimura";
     } elsif ($aligner eq "clustalo1.2order") {
-	system "clustalo-1.2.0-Ubuntu-x86_64 --auto -i $seq_file -o $alignment_file -l $alignment_file.err --force -v -v --output-order=tree-order";
+	system "clustalo-1.2.0-Ubuntu-x86_64 --auto -i $seq_file -o $alignment_file -l $alignment_file.err --threads=4 --force -v -v --output-order=tree-order";
     } elsif ($aligner eq "clustalo1.2orderkimura") {
-	system "clustalo-1.2.0-Ubuntu-x86_64 --auto -i $seq_file -o $alignment_file -l $alignment_file.err --force -v -v --output-order=tree-order --use-kimura";
+	system "clustalo-1.2.0-Ubuntu-x86_64 --auto -i $seq_file -o $alignment_file -l $alignment_file.err --threads=4 --force -v -v --output-order=tree-order --use-kimura";
     } elsif ($aligner eq "clustalw") {
 	convert_seq_file($seq_file, $TMP_SEQ_FOR_CLUSTALW);
 	system "clustalw2 -endgaps -infile=$TMP_SEQ_FOR_CLUSTALW -outfile=$TMP_ALIGNMENT_BY_ALIGNER -output=gde -outorder=input 2>&1 > $alignment_file.err";
