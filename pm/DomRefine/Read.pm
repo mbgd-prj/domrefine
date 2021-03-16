@@ -1042,7 +1042,7 @@ sub put_homology_in_hash {
     # ${$r_hom}{$gene1}{$gene2}{score} = $score;
 
     # ${$r_hom}{$gene1}{$gene2} = "start1:$start1 end1:$end1 start2:$start2 end2:$end2";
-    ${$r_hom}{"$gene1 $gene2"} = "start1:$start1 end1:$end1 start2:$start2 end2:$end2";
+    ${$r_hom}{"$gene1 $gene2"} = "s1:$start1 e1:$end1 s2:$start2 e2:$end2";
 }
 
 ################################################################################
