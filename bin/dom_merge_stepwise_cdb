@@ -2,6 +2,7 @@
 use strict;
 use File::Basename;
 use Getopt::Std;
+use CDB_File;
 my $PROGRAM = basename $0;
 my $USAGE=
 "Usage: cat TABOUT | $PROGRAM -l LINK DCLST_FILE
@@ -35,6 +36,8 @@ my ($CLUSTER_INPUT) = @ARGV;
 ### Read homology data ###
 my ($DBH, $DBH_ACCUM) = (get_dbh("mbgd"), get_dbh("mbgd_accum")) if $OPT{H};
 my %HOM = (); # This may consume large memory
+# dbmopen(%HOM, "homfile", 0644) || die; # use DBM
+my $CDB = new CDB_File ("homfile.cdb", "homfile.$$") or die;
 if (! -t) {
     my $count = 0;
     while (<STDIN>) {
@@ -43,7 +46,7 @@ if (! -t) {
 	    next;
 	}
 	my ($gene1, $gene2, $start1, $end1, $start2, $end2, $pam, $score) = @f;
-	put_homology_in_hash(\%HOM, $gene1, $gene2, $start1, $end1, $start2, $end2, $pam, $score);
+    $CDB->insert("$gene1 $gene2", "start1:$start1 end1:$end1 start2:$start2 end2:$end2");
 	$count ++;
 	if ($count % 1000000 == 0) {
 	    print STDERR ".";
@@ -54,6 +57,8 @@ if (! -t) {
     }
     print STDERR "\n\n";
 }
+# dbmclose(%HOM);
+$CDB->finish;
 
 ### Read clusters ###
 my %CLUSTER_MEMBERS_TXT = ();
@@ -65,6 +70,8 @@ my %OLD2NEW_CLUSTER = ();
 my %NEW2OLD_CLUSTER = ();
 
 open(LINK, "$LINK") || die;
+# dbmopen(%HOM, "homfile", 0644) || die; # use DBM
+tie(%HOM, 'CDB_File', "homfile.cdb") or die;
 while (<LINK>) {
     chomp;
     my @original_cluster = split(/[-,\s]/, $_);
@@ -101,6 +108,7 @@ while (<LINK>) {
     }
 }
 close(LINK);
+# dbmclose(%HOM);
 
 output_cluster_members(\%CLUSTER_MEMBERS_TXT);
 
