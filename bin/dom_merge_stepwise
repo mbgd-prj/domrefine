@@ -8,6 +8,7 @@ my $USAGE=
 -H: use homology data in MySQL
 -r RATIO: ratio of segment coverage by homology
 -R RATIO: ratio of homology links
+-L LINK_TESTED: resume results for these links
 ";
 # -a: align by region
 
@@ -20,7 +21,7 @@ use DomRefine::Motif;
 
 ### Settings ###
 my %OPT;
-getopts('l:Hr:R:a', \%OPT);
+getopts('l:Hr:R:aL:', \%OPT);
 
 my $LINK = $OPT{l} || die $USAGE;
 
@@ -63,6 +64,27 @@ read_cluster_members_from_file($CLUSTER_INPUT, \%CLUSTER_MEMBERS_TXT, \%MEMBER);
 ### Check each link ###
 my %OLD2NEW_CLUSTER = ();
 my %NEW2OLD_CLUSTER = ();
+
+if ($OPT{L}) {
+    open(LINK_TESTED, "$OPT{L}") || die;
+    while (<LINK_TESTED>) {
+        chomp;
+        my @original_cluster = split(/[-,\s]/, $_);
+        print STDERR "\nMERGE_TEST: @original_cluster\n";
+        my ($flg_changed, @updated_target_cluster) = get_new_cluster_ids(\%OLD2NEW_CLUSTER, @original_cluster);
+        if (@updated_target_cluster == 2) {
+            print STDERR "MERGED: @original_cluster\n";
+            my $new_cluster_id = choose_new_cluster_id(\%CLUSTER_MEMBERS_TXT, @updated_target_cluster);
+            print STDERR "\t@updated_target_cluster -> $new_cluster_id\n";
+            update_clusters(\%CLUSTER_MEMBERS_TXT, \%MEMBER, \%OLD2NEW_CLUSTER, \%NEW2OLD_CLUSTER, @updated_target_cluster);
+        } elsif (@updated_target_cluster == 1) {
+            print STDERR "ALREADY_MERGED: @updated_target_cluster\n";
+        } else {
+            die "@original_cluster -> @updated_target_cluster";
+        }
+    }
+    close(LINK_TESTED) || die;
+}
 
 open(LINK, "$LINK") || die;
 while (<LINK>) {
