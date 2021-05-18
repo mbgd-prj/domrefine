@@ -531,18 +531,18 @@ sub check_merge_by_hom {
     my $count_all = 0;
     my $count_homology = 0;
     for my $gene1 (@gene1) {
-	for my $gene2 (@gene2) {
-	    if (${$r_member}{$cluster1}{$gene1} && ${$r_member}{$cluster1}{$gene2} and 
-		${$r_member}{$cluster2}{$gene1} && ${$r_member}{$cluster2}{$gene2}) {
-	    } elsif ($gene1 eq $gene2) {
-	    } else {
-		$count_all ++;
-		if (overlap_domain_hom($gene1, $gene2, $r_hom, $r_member, $cluster1, $cluster2, %opt) ||
-            overlap_domain_hom($gene2, $gene1, $r_hom, $r_member, $cluster1, $cluster2, %opt)) {
-		    $count_homology ++;
-		}
-	    }
-	}
+        for my $gene2 (@gene2) {
+            if (${$r_member}{$cluster1}{$gene1} && ${$r_member}{$cluster1}{$gene2} and 
+                ${$r_member}{$cluster2}{$gene1} && ${$r_member}{$cluster2}{$gene2}) {
+            } elsif ($gene1 eq $gene2) {
+            } else {
+                $count_all ++;
+                if (overlap_domain_hom($gene1, $gene2, $r_hom, $r_member, $cluster1, $cluster2, %opt) ||
+                    overlap_domain_hom($gene2, $gene1, $r_hom, $r_member, $cluster1, $cluster2, %opt)) {
+                    $count_homology ++;
+                }
+            }
+        }
     }
 
     print STDERR "$cluster1-$cluster2\t$count_homology/$count_all\t";
@@ -550,14 +550,14 @@ sub check_merge_by_hom {
     print STDERR "\t", scalar(@gene1), "\t", scalar(@gene2), "\n";
 
     if ($count_all) {
-	if ($count_homology/$count_all >= $opt{R}) {
-	    return 1;
-	} else {
-	    return 0;
-	}
+        if ($count_homology/$count_all >= $opt{R}) {
+            return 1;
+        } else {
+            return 0;
+        }
     } else {
-	print STDERR "WARNING: no links were evaluated\n";
-	return 1;
+        print STDERR "WARNING: no links were evaluated\n";
+        return 1;
     }
 }
 
