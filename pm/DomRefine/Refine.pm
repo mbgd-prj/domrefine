@@ -780,26 +780,26 @@ sub update_clusters {
     replace_clusters($r_cluster_members_txt, @target_cluster);
 
     for my $target_cluster (@target_cluster) {
-	for my $gene (keys %{${$r_member}{$target_cluster}}) {
-	    for my $domain (keys %{${$r_member}{$target_cluster}{$gene}}) {
-		${$r_member}{$new_cluster}{$gene}{$domain}{start} = ${$r_member}{$target_cluster}{$gene}{$domain}{start};
-		${$r_member}{$new_cluster}{$gene}{$domain}{end} = ${$r_member}{$target_cluster}{$gene}{$domain}{end};
-	    }
-	}
+        for my $gene (keys %{${$r_member}{$target_cluster}}) {
+            for my $domain (keys %{${$r_member}{$target_cluster}{$gene}}) {
+                ${$r_member}{$new_cluster}{$gene}{$domain}{start} = ${$r_member}{$target_cluster}{$gene}{$domain}{start};
+                ${$r_member}{$new_cluster}{$gene}{$domain}{end} = ${$r_member}{$target_cluster}{$gene}{$domain}{end};
+            }
+        }
     }
 
     # Update mappings between old/new IDs
     my @original_cluster = ();
     for my $target_cluster (@target_cluster) {
-	if (${$r_new2old_cluster}{$target_cluster}) {
-	    push @original_cluster, @{${$r_new2old_cluster}{$target_cluster}};
-	}
+        if (${$r_new2old_cluster}{$target_cluster}) {
+            push @original_cluster, @{${$r_new2old_cluster}{$target_cluster}};
+        }
     }
     @original_cluster = uniq(@original_cluster, @target_cluster);
 
     @{${$r_new2old_cluster}{$new_cluster}} = @original_cluster;
     for my $original_cluster (@original_cluster) {
-	${$r_old2new_cluster}{$original_cluster} = $new_cluster;
+        ${$r_old2new_cluster}{$original_cluster} = $new_cluster;
     }
 
 }
