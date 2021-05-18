@@ -825,25 +825,25 @@ sub choose_new_cluster_id {
     my $flg_int = 1;
     my %prefix = ();
     for my $cluster (@cluster) {
-	if ($cluster =~ /^(\d+)/) {
-	    my $int = $1;
-	    $prefix{$cluster} = $int;
-	} else {
-	    $flg_int = 0;
-	}
+        if ($cluster =~ /^(\d+)/) {
+            my $int = $1;
+            $prefix{$cluster} = $int;
+        } else {
+            $flg_int = 0;
+        }
     }
 
     my @cluster_sorted = ();
     if ($flg_int) {
-	@cluster_sorted = sort {$prefix{$a} <=> $prefix{$b}} @cluster;
+        @cluster_sorted = sort {$prefix{$a} <=> $prefix{$b}} @cluster;
     } else {
-	@cluster_sorted = sort {$a cmp $b} @cluster;
+        @cluster_sorted = sort {$a cmp $b} @cluster;
     }
 
     my $new_cluster_id = $cluster_sorted[0] . "a";
 
     if (${$r_cluster_members}{$new_cluster_id}) {
-	die; # possibly bug?: duplicated IDs might be produced in the case of string ?
+        die; # possibly bug?: duplicated IDs might be produced in the case of string ?
     }
 
     return $new_cluster_id;
