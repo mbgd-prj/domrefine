@@ -758,14 +758,14 @@ sub get_new_cluster_ids {
     my @updated_cluster = ();
     my $flg_changed = 0;
     for my $cluster (@cluster) {
-	if (${$r_old2new_cluster}{$cluster}) {
-	    my $new_cluster = ${$r_old2new_cluster}{$cluster};
-	    print STDERR "[$cluster] is changed to [$new_cluster].\n";
-	    push @updated_cluster, $new_cluster;
-	    $flg_changed = 1;
-	} else {
-	    push @updated_cluster, $cluster;
-	}
+        if (${$r_old2new_cluster}{$cluster}) {
+            my $new_cluster = ${$r_old2new_cluster}{$cluster};
+            print STDERR "[$cluster] is changed to [$new_cluster].\n";
+            push @updated_cluster, $new_cluster;
+            $flg_changed = 1;
+        } else {
+            push @updated_cluster, $cluster;
+        }
     }
     @updated_cluster = uniq(@updated_cluster);
 
