@@ -38,7 +38,9 @@ while (<STDIN>) {
 # get seq
 my @GENE = keys %DOMAIN;
 my %SEQ = ();
-read_seq(\%SEQ, \@GENE);
+if ($OPT{e} || $OPT{l}) {
+    read_seq(\%SEQ, \@GENE);
+}
 
 ### Check domains ###
 for my $gene (sort {$a cmp $b} keys %DOMAIN) {
@@ -48,7 +50,10 @@ for my $gene (sort {$a cmp $b} keys %DOMAIN) {
         my $cluster = $DOMAIN{$gene}{$domains[$i]}{cluster};
         my $begin = $DOMAIN{$gene}{$domains[$i]}{begin};
         my $end = $DOMAIN{$gene}{$domains[$i]}{end};
-        my $gene_len = get_gene_length(\%SEQ, $gene);
+        my $gene_len;
+        if ($OPT{e} || $OPT{l}) {
+            $gene_len = get_gene_length(\%SEQ, $gene);
+        }
         # domain number
         if (@domains == 1) {
             if ($domains[0] != 0) {
