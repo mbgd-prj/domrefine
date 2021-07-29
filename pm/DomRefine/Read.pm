@@ -570,7 +570,7 @@ sub calc_total_aa {
 }
 
 sub read_seq {
-    my ($r_seq, $r_gene, $blastdbcmd) = @_;
+    my ($r_seq, $r_gene) = @_;
 
     my %seq_to_read = ();
     my $gene_cnt = 0 ;
@@ -588,16 +588,11 @@ sub read_seq {
     my $start_time = time;
     if (-f $ENV{DOMREFINE_SEQ_DB}) {
         print STDERR " read $ENV{DOMREFINE_SEQ_DB} ..\n";
-
-        #2020.11.30##if($blastdbcmd){
-        #blastcmd - makeblastdb
-        $blastdbcmd=1; #2020.12.5 temporary change
-        if($blastdbcmd && $gene_cnt < 5000){
+        if ($ENV{DOMREFINE_BLASTDBCMD} && $gene_cnt < 5000){
             if (!-e "$ENV{DOMREFINE_SEQ_DB}.pal"){
                 my $cmd="/bio/bin/makeblastdb -dbtype prot -hash_index -parse_seqids $ENV{DOMREFINE_SEQ_DB}";
                 system($cmd);
             }
-
             for my $gene (@{$r_gene}) {
                 my ($sp, $name) = decompose_gene_id($gene);
                 #my $cmd="/bio/bin/blastdbcmd -outfmt '%s' -entry $gene -db $ENV{DOMREFINE_SEQ_DB}";
@@ -607,9 +602,7 @@ sub read_seq {
                 $tmpout=~s/\r\n|\r|\n//g;
                 ${$r_seq}{$sp}{$gene} = $tmpout;
             }
-        }
-        else{
-
+        } else {
             open(BLDB, "$ENV{DOMREFINE_SEQ_DB}") || die;
             my $read_flg = 0;
             my $gene;
@@ -640,9 +633,7 @@ sub read_seq {
                 }
             }
             close(BLDB);
-
         }
-
     } elsif (-d $ENV{DOMREFINE_SEQ_DB}) {
         print STDERR " read directory $ENV{DOMREFINE_SEQ_DB} ..\n";
         for my $organism (keys %seq_to_read) {

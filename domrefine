@@ -16,6 +16,7 @@
 # -F : fast merge
 # -C : skip create boundary
 # -R : align by region (default: off) 
+# -B : use blastdbcmd
 
 # -H homology_dir
 # -I homology_info
@@ -71,8 +72,9 @@ if [ -e "$DOMREFINE_DIR/bin" ] &&  [ -e "$DOMREFINE_DIR/bin_dev" ] &&  [ -e "$DO
     export DOMREFINE_HOMOLOGY_INFO= # overwritten by -I
     export DOMREFINE_TREE=FastTree # overwritten by -f ; the program is executed in pm/DomRefine/Tree.pm
     export DOMREFINE_ENDPOINT=mbgd
+    export DOMREFINE_BLASTDBCMD=0
     
-    while getopts "q:n:u:c:p:P:atONsrMFCRH:I:Q:f:A:" opt; do
+    while getopts "q:n:u:c:p:P:atONsrMFCRH:I:Q:f:A:B" opt; do
 	case $opt in
 	    q ) DOMREFINE_QUEUE=$OPTARG;;
 	    n ) DOMREFINE_QUEUE_SIZE=$OPTARG;;
@@ -95,6 +97,7 @@ if [ -e "$DOMREFINE_DIR/bin" ] &&  [ -e "$DOMREFINE_DIR/bin_dev" ] &&  [ -e "$DO
 	    Q ) DOMREFINE_LARGE_QUEUE=$OPTARG;;
 	    f ) DOMREFINE_TREE=$OPTARG;;
 	    A ) DOMREFINE_SAVE_ARCHIVE=$OPTARG;;
+	    B ) DOMREFINE_BLASTDBCMD=1;;
 	esac
     done
     shift $(($OPTIND - 1))
