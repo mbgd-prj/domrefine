@@ -49,14 +49,14 @@ sub aligner {
     my $cache_file_stepwise_merge = cache_file_path($ENV{DOMREFINE_CACHE_STEPWISE_MERGE}, md5_hex(fasta_to_sorted_tsv($seq_file)), ".$aligner");
 
     if ($ENV{DOMREFINE_READ_ALIGNMENT_CACHE} and found_alignment_cache($seq_file, $cache_file)) {
-	print STDERR " found alignment cache $cache_file\n";
-	system "cp $cache_file $alignment_file";
-	return $cache_file;
+        print STDERR " found alignment cache $cache_file\n";
+        system "cp $cache_file $alignment_file";
+        return $cache_file;
     }
     if ($opt{stepwise_merge} and found_alignment_cache($seq_file, $cache_file_stepwise_merge)) {
-	print STDERR " found alignment cache $cache_file_stepwise_merge\n";
-	system "cp $cache_file_stepwise_merge $alignment_file";
-	return $cache_file_stepwise_merge;
+        print STDERR " found alignment cache $cache_file_stepwise_merge\n";
+        system "cp $cache_file_stepwise_merge $alignment_file";
+        return $cache_file_stepwise_merge;
     }
 
     my ($n_seq, $n_aa, $mean_len) = seq_file_stat($seq_file);
@@ -65,62 +65,62 @@ sub aligner {
     my $start_time = time;
 
     if ($aligner eq "mafft6") {
-	system "mafft --auto --anysymbol $seq_file > $alignment_file 2> $alignment_file.err";
-	# system "mafft --localpair $seq_file > $alignment_file 2> $alignment_file.err";
+        system "mafft --auto --anysymbol $seq_file > $alignment_file 2> $alignment_file.err";
+        # system "mafft --localpair $seq_file > $alignment_file 2> $alignment_file.err";
     } elsif ($aligner eq "mafft-fast") {
-	system "/bio/bin/mafft --retree 1 --maxiterate 0 --anysymbol $seq_file > $alignment_file 2> $alignment_file.err";
+        system "/bio/bin/mafft --retree 1 --maxiterate 0 --anysymbol $seq_file > $alignment_file 2> $alignment_file.err";
     } elsif ($aligner eq "mafft") {
-	system "/bio/bin/mafft --anysymbol $seq_file > $alignment_file 2> $alignment_file.err";
+        system "/bio/bin/mafft --anysymbol $seq_file > $alignment_file 2> $alignment_file.err";
     } elsif ($aligner eq "mafft-fftns") {
-	system "/bio/bin/fftns --anysymbol $seq_file > $alignment_file 2> $alignment_file.err";
+        system "/bio/bin/fftns --anysymbol $seq_file > $alignment_file 2> $alignment_file.err";
     } elsif ($aligner eq "mafft-auto") {
-	system "/bio/bin/mafft --auto --anysymbol $seq_file > $alignment_file 2> $alignment_file.err";
+        system "/bio/bin/mafft --auto --anysymbol $seq_file > $alignment_file 2> $alignment_file.err";
     } elsif ($aligner eq "mafft-fftnsi") {
-	system "/bio/bin/fftnsi --anysymbol $seq_file > $alignment_file 2> $alignment_file.err";
+        system "/bio/bin/fftnsi --anysymbol $seq_file > $alignment_file 2> $alignment_file.err";
     } elsif ($aligner eq "mafft-linsi") {
-	system "/bio/bin/linsi --anysymbol $seq_file > $alignment_file 2> $alignment_file.err";
+        system "/bio/bin/linsi --anysymbol $seq_file > $alignment_file 2> $alignment_file.err";
     } elsif ($aligner eq "muscle") {
-	system "muscle -in $seq_file -out $alignment_file 2> $alignment_file.err";
-	# system "muscle -stable -in $seq_file -out $alignment_file 2> $alignment_file.err";
+        system "muscle -in $seq_file -out $alignment_file 2> $alignment_file.err";
+        # system "muscle -stable -in $seq_file -out $alignment_file 2> $alignment_file.err";
     } elsif ($aligner eq "clustalo1.1") {
-	system "clustalo-1.1.0-linux-64 --auto -i $seq_file -o $alignment_file -l $alignment_file.err --threads=4 --force -v -v";
+        system "clustalo-1.1.0-linux-64 --auto -i $seq_file -o $alignment_file -l $alignment_file.err --threads=4 --force -v -v";
     } elsif ($aligner eq "clustalo1.2") {
-	system "clustalo-1.2.0-Ubuntu-x86_64 --auto -i $seq_file -o $alignment_file -l $alignment_file.err --threads=4 --force -v -v";
+        system "clustalo-1.2.0-Ubuntu-x86_64 --auto -i $seq_file -o $alignment_file -l $alignment_file.err --threads=4 --force -v -v";
     } elsif ($aligner eq "clustalo1.2kimura") {
-	system "clustalo-1.2.0-Ubuntu-x86_64 --auto -i $seq_file -o $alignment_file -l $alignment_file.err --threads=4 --force -v -v --use-kimura";
+        system "clustalo-1.2.0-Ubuntu-x86_64 --auto -i $seq_file -o $alignment_file -l $alignment_file.err --threads=4 --force -v -v --use-kimura";
     } elsif ($aligner eq "clustalo1.2order") {
-	system "clustalo-1.2.0-Ubuntu-x86_64 --auto -i $seq_file -o $alignment_file -l $alignment_file.err --threads=4 --force -v -v --output-order=tree-order";
+        system "clustalo-1.2.0-Ubuntu-x86_64 --auto -i $seq_file -o $alignment_file -l $alignment_file.err --threads=4 --force -v -v --output-order=tree-order";
     } elsif ($aligner eq "clustalo1.2orderkimura") {
-	system "clustalo-1.2.0-Ubuntu-x86_64 --auto -i $seq_file -o $alignment_file -l $alignment_file.err --threads=4 --force -v -v --output-order=tree-order --use-kimura";
+        system "clustalo-1.2.0-Ubuntu-x86_64 --auto -i $seq_file -o $alignment_file -l $alignment_file.err --threads=4 --force -v -v --output-order=tree-order --use-kimura";
     } elsif ($aligner eq "clustalw") {
-	convert_seq_file($seq_file, $TMP_SEQ_FOR_CLUSTALW);
-	system "clustalw2 -endgaps -infile=$TMP_SEQ_FOR_CLUSTALW -outfile=$TMP_ALIGNMENT_BY_ALIGNER -output=gde -outorder=input 2>&1 > $alignment_file.err";
+        convert_seq_file($seq_file, $TMP_SEQ_FOR_CLUSTALW);
+        system "clustalw2 -endgaps -infile=$TMP_SEQ_FOR_CLUSTALW -outfile=$TMP_ALIGNMENT_BY_ALIGNER -output=gde -outorder=input 2>&1 > $alignment_file.err";
     } elsif ($aligner eq "t_coffee") {
-	system "t_coffee $seq_file -mode regular -outfile=$TMP_ALIGNMENT_BY_ALIGNER -output=fasta_aln > /dev/null 2> $alignment_file.err";
+        system "t_coffee $seq_file -mode regular -outfile=$TMP_ALIGNMENT_BY_ALIGNER -output=fasta_aln > /dev/null 2> $alignment_file.err";
     } elsif ($aligner eq "t_coffee_quick") {
-	system "t_coffee $seq_file -mode quickaln -outfile=$alignment_file -output=fasta_aln > /dev/null 2> $alignment_file.err";
+        system "t_coffee $seq_file -mode quickaln -outfile=$alignment_file -output=fasta_aln > /dev/null 2> $alignment_file.err";
     }
 
     if ($aligner =~ /^(clustalw|t_coffee|t_coffee_quick)$/) {
-	convert_alignment_file($TMP_ALIGNMENT_BY_ALIGNER, $alignment_file);
+        convert_alignment_file($TMP_ALIGNMENT_BY_ALIGNER, $alignment_file);
     }
 
     my $end_time = time;
     printf STDERR "%d sec\n", $end_time - $start_time;
 
     if ($opt{stepwise_merge}) {
-	print STDERR " saving alignment cache $cache_file_stepwise_merge\n";
-	print STDERR " saving alignment cache $cache_file_stepwise_merge.err\n";
-	system "cp -a $alignment_file $cache_file_stepwise_merge";
-	system "cp -a $alignment_file.err $cache_file_stepwise_merge.err";
-	return $cache_file_stepwise_merge;
+        print STDERR " saving alignment cache $cache_file_stepwise_merge\n";
+        print STDERR " saving alignment cache $cache_file_stepwise_merge.err\n";
+        system "cp -a $alignment_file $cache_file_stepwise_merge";
+        system "cp -a $alignment_file.err $cache_file_stepwise_merge.err";
+        return $cache_file_stepwise_merge;
     }
     if ($ENV{DOMREFINE_WRITE_ALIGNMENT_CACHE}) {
-	print STDERR " saving alignment cache $cache_file\n";
-	print STDERR " saving alignment cache $cache_file.err\n";
-	system "cp -a $alignment_file $cache_file";
-	system "cp -a $alignment_file.err $cache_file.err";
-	return $cache_file;
+        print STDERR " saving alignment cache $cache_file\n";
+        print STDERR " saving alignment cache $cache_file.err\n";
+        system "cp -a $alignment_file $cache_file";
+        system "cp -a $alignment_file.err $cache_file.err";
+        return $cache_file;
     }
 }
 
@@ -131,7 +131,7 @@ sub incremental_alignment {
     print STDERR "Incremental merge\n";
 
     if (@cluster != 2) {
-	die;
+        die;
     }
     my $domtbl_1 = extract_domtbl($dclst, $cluster[0]);
     my $domtbl_2 = extract_domtbl($dclst, $cluster[1]);
@@ -143,11 +143,11 @@ sub incremental_alignment {
     my @genes_main = ();
     my @genes_add = ();
     if (@genes_1 > @genes_2) {
-	@genes_main = @genes_1;
-	@genes_add = subtract_geneset(\@genes_1, \@genes_2);
+        @genes_main = @genes_1;
+        @genes_add = subtract_geneset(\@genes_1, \@genes_2);
     } else {
-	@genes_main = @genes_2;
-	@genes_add = subtract_geneset(\@genes_2, \@genes_1);
+        @genes_main = @genes_2;
+        @genes_add = subtract_geneset(\@genes_2, \@genes_1);
     }
     # print STDERR "diff clusters (", scalar(@genes_add), " genes): @genes_add\n";
 
@@ -158,24 +158,24 @@ sub incremental_alignment {
     open(TMP_SEQ_UNION, ">$TMP_SEQ_UNION") || die;
     open(TMP_SEQ_COMMON, ">$TMP_SEQ_COMMON") || die;
     for my $gene (@genes_main) {
-	my $seq = get_geneset_seq($gene, \%seq);
-	if ($seq) {
-	    print TMP_SEQ_COMMON $seq;
-	    print TMP_SEQ_UNION $seq;
-	} else {
-	    print STDERR "WARNING: incremental_alignment: no seq for $gene\n";
-	}
+        my $seq = get_geneset_seq($gene, \%seq);
+        if ($seq) {
+            print TMP_SEQ_COMMON $seq;
+            print TMP_SEQ_UNION $seq;
+        } else {
+            print STDERR "WARNING: incremental_alignment: no seq for $gene\n";
+        }
     }
     close(TMP_SEQ_COMMON);
     open(TMP_SEQ_ADD, ">$TMP_SEQ_ADD") || die;
     for my $gene (@genes_add) {
-	my $seq = get_geneset_seq($gene, \%seq);
-	if ($seq) {
-	    print TMP_SEQ_ADD $seq;
-	    print TMP_SEQ_UNION $seq;
-	} else {
-	    print STDERR "WARNING: incremental_alignment: no seq for $gene\n";
-	}
+        my $seq = get_geneset_seq($gene, \%seq);
+        if ($seq) {
+            print TMP_SEQ_ADD $seq;
+            print TMP_SEQ_UNION $seq;
+        } else {
+            print STDERR "WARNING: incremental_alignment: no seq for $gene\n";
+        }
     }
     close(TMP_SEQ_ADD);
     close(TMP_SEQ_UNION);
@@ -185,12 +185,12 @@ sub incremental_alignment {
     my $cache_file_stepwise_merge = cache_file_path($ENV{DOMREFINE_CACHE_STEPWISE_MERGE}, md5_hex(fasta_to_sorted_tsv($TMP_SEQ_UNION)), ".$aligner");
 
     if ($ENV{DOMREFINE_READ_ALIGNMENT_CACHE} and found_alignment_cache($TMP_SEQ_UNION, $cache_file)) {
-	print STDERR " found alignment cache $cache_file\n";
-	return;
+        print STDERR " found alignment cache $cache_file\n";
+        return;
     }
     if (found_alignment_cache($TMP_SEQ_UNION, $cache_file_stepwise_merge)) {
-	print STDERR " found alignment cache $cache_file_stepwise_merge\n";
-	return;
+        print STDERR " found alignment cache $cache_file_stepwise_merge\n";
+        return;
     }
 
     print STDERR "Aligning common seq (clusters @cluster)\n";
@@ -199,18 +199,18 @@ sub incremental_alignment {
     my $start_time = time;
     my $aligner_command = "clustalo-1.2.0-Ubuntu-x86_64 --auto --p1 $TMP_ALIGNMENT_COMMON -o $TMP_ALIGNMENT_UNION -l $TMP_ALIGNMENT_UNION.err --force -v -v";
     if ($aligner =~ /kimura$/) {
-	$aligner_command .= " --use-kimura";
+        $aligner_command .= " --use-kimura";
     }
     if (@genes_add == 0) {
-	print STDERR "WARNING: incremental_alignment: no seq diff for cluster pair @cluster\n";
-	system "cp -a $TMP_ALIGNMENT_COMMON $TMP_ALIGNMENT_UNION";
+        print STDERR "WARNING: incremental_alignment: no seq diff for cluster pair @cluster\n";
+        system "cp -a $TMP_ALIGNMENT_COMMON $TMP_ALIGNMENT_UNION";
     } elsif (@genes_add == 1) {
-	print STDERR " add 1 seq: ";
-	system "$aligner_command --p2 $TMP_SEQ_ADD";
+        print STDERR " add 1 seq: ";
+        system "$aligner_command --p2 $TMP_SEQ_ADD";
     } else {
-	print STDERR " align ", scalar(@genes_main), " seq and ", scalar(@genes_add), " seq: ";
-	system "$aligner_command -i $TMP_SEQ_ADD";
-	# using --output-order=tree-order results in segmentation fault
+        print STDERR " align ", scalar(@genes_main), " seq and ", scalar(@genes_add), " seq: ";
+        system "$aligner_command -i $TMP_SEQ_ADD";
+        # using --output-order=tree-order results in segmentation fault
     }
     my $end_time = time;
     printf STDERR " %d sec\n", $end_time - $start_time;
@@ -230,34 +230,34 @@ sub create_alignment {
     my @before_seq = ();
     my @after_seq = ();
     if ($opt{region} or $opt{REGION}) {
-	print STDERR "read region seq\n";
-	read_dclst_to_seq_file_region($dclst_file, $TMP_SEQ_TO_CREATE_ALIGNMENT, \%before_seq, \%after_seq);
+        print STDERR "read region seq\n";
+        read_dclst_to_seq_file_region($dclst_file, $TMP_SEQ_TO_CREATE_ALIGNMENT, \%before_seq, \%after_seq);
     } elsif ($opt{domain} or $opt{DOMAIN}) {
-	print STDERR "read domain seq\n";
-	read_dclst_to_seq_file_domain($dclst_file, $TMP_SEQ_TO_CREATE_ALIGNMENT, \@before_seq, \@after_seq);
+        print STDERR "read domain seq\n";
+        read_dclst_to_seq_file_domain($dclst_file, $TMP_SEQ_TO_CREATE_ALIGNMENT, \@before_seq, \@after_seq);
     } else {
-	print STDERR "read gene seq\n";
-	read_dclst_to_seq_file($dclst_file, $TMP_SEQ_TO_CREATE_ALIGNMENT);
+        print STDERR "read gene seq\n";
+        read_dclst_to_seq_file($dclst_file, $TMP_SEQ_TO_CREATE_ALIGNMENT);
     }
 
     # create alignment file
     my @line = `cat $TMP_SEQ_TO_CREATE_ALIGNMENT | grep '^>'`;
     if (@line == 1) {
-	system "cp $TMP_SEQ_TO_CREATE_ALIGNMENT $alignment_file";
+        system "cp $TMP_SEQ_TO_CREATE_ALIGNMENT $alignment_file";
     } elsif (@line >= 2) {
-	aligner($TMP_SEQ_TO_CREATE_ALIGNMENT, $alignment_file, %opt);
+        aligner($TMP_SEQ_TO_CREATE_ALIGNMENT, $alignment_file, %opt);
     } else {
-	die "no seq to align";
+        die "no seq to align";
     }
 
     # post process
     if ($opt{region}) {
-	append_seq_to_alignments($alignment_file, \%before_seq, \%after_seq);
+        append_seq_to_alignments($alignment_file, \%before_seq, \%after_seq);
     } elsif ($opt{domain}) {
-	# This option is only used in dom_draw.
-	# WARNING: do NOT change the order of sequences in the alignment.
-	#          And do not use CACHE (different order of input could be cached as the same calculation).
-	append_seq_to_alignments_array($alignment_file, \@before_seq, \@after_seq);
+        # This option is only used in dom_draw.
+        # WARNING: do NOT change the order of sequences in the alignment.
+        #          And do not use CACHE (different order of input could be cached as the same calculation).
+        append_seq_to_alignments_array($alignment_file, \@before_seq, \@after_seq);
     }
     read_fasta_entries($alignment_file, $r_gene);
 
@@ -275,7 +275,7 @@ sub get_alignment_structure {
     my $n_seq = read_alignment($TMP_ALIGNMENT_TO_GET_ALIGNMENT_STRUCTURE, $r_a);
     my $n_pos = check_alignment_length(\@{$r_a});
     if (@{$r_gene} != @{$r_a}) {
-	die scalar(@{$r_gene}) . " != " . scalar(@{$r_a});
+        die scalar(@{$r_gene}) . " != " . scalar(@{$r_a});
     }
     print STDERR " n_seq=$n_seq, n_pos=$n_pos\n";
 
@@ -292,9 +292,9 @@ sub get_alignment_matrices {
 
     get_dclst_structure($dclst_file, $h_cluster, $h_domain);
     if ($opt{domain}) {
-	map_domains_one_by_one($r_gene, $h_domain, $r_b, $r_d, $dclst_file);
+        map_domains_one_by_one($r_gene, $h_domain, $r_b, $r_d, $dclst_file);
     } else {
-	map_domains($r_gene, $h_domain, $r_b, $r_d);
+        map_domains($r_gene, $h_domain, $r_b, $r_d);
     }
     create_get_j($r_b, $r_get_j);
 
@@ -307,17 +307,17 @@ sub read_alignment {
     my $alignment = "";
     open(F, $file) || die;
     while (<F>) {
-	chomp;
-	if (/^>(.*)/) {
-	    if ($alignment) {
-		$alignment =~ s/\s//g;
-		my @a = split //, $alignment;
-		push @{$r_a}, \@a;
-		$alignment = "";
-	    }
-	} else {
-	    $alignment .= $_;
-	}
+        chomp;
+        if (/^>(.*)/) {
+            if ($alignment) {
+                $alignment =~ s/\s//g;
+                my @a = split //, $alignment;
+                push @{$r_a}, \@a;
+                $alignment = "";
+            }
+        } else {
+            $alignment .= $_;
+        }
     }
     $alignment =~ s/\s//g;
     my @a = split //, $alignment;
@@ -333,19 +333,19 @@ sub map_domains {
 
     initialize_matrix($r_d, $n, $m, 0);
     for (my $i=0; $i<$n; $i++) {
-	my $gene = ${$r_gene}[$i];
-	my @domains = keys %{${$r_h_domain}{$gene}};
-	for my $domain (@domains) {
-	    my $begin_pos = ${$r_h_domain}{$gene}{$domain}{begin};
-	    my $end_pos = ${$r_h_domain}{$gene}{$domain}{end};
-	    my $cluster = ${$r_h_domain}{$gene}{$domain}{cluster};
-	    my ($begin_j, $end_j) = get_j_of_domain(${$r_b}[$i], $begin_pos, $end_pos);
-	    if (defined($begin_j) and defined($end_j)) {
-		for (my $j=$begin_j; $j<=$end_j; $j++) {
-		    ${$r_d}[$i][$j] = $cluster;
-		}
-	    }
-	}
+        my $gene = ${$r_gene}[$i];
+        my @domains = keys %{${$r_h_domain}{$gene}};
+        for my $domain (@domains) {
+            my $begin_pos = ${$r_h_domain}{$gene}{$domain}{begin};
+            my $end_pos = ${$r_h_domain}{$gene}{$domain}{end};
+            my $cluster = ${$r_h_domain}{$gene}{$domain}{cluster};
+            my ($begin_j, $end_j) = get_j_of_domain(${$r_b}[$i], $begin_pos, $end_pos);
+            if (defined($begin_j) and defined($end_j)) {
+                for (my $j=$begin_j; $j<=$end_j; $j++) {
+                    ${$r_d}[$i][$j] = $cluster;
+                }
+            }
+        }
     }
 }
 
@@ -356,15 +356,15 @@ sub create_get_j {
     my $m = @{${$r_b}[0]};
 
     for (my $i=0; $i<$n; $i++) {
-	my $count = 0;
+        my $count = 0;
 # 	print STDERR "$i\n";
-	for (my $j=0; $j<$m; $j++) {
-	    if (${$r_b}[$i][$j] == 1) {
-		$count ++;
-		${${$r_get_j}[$i]}{$count} = $j;
+        for (my $j=0; $j<$m; $j++) {
+            if (${$r_b}[$i][$j] == 1) {
+                $count ++;
+                ${${$r_get_j}[$i]}{$count} = $j;
 # 		print STDERR "$count,$j ";
-	    }
-	}
+            }
+        }
 # 	print STDERR "\n";
     }
 }
@@ -376,14 +376,14 @@ sub create_get_pos_from_a {
     my $m = @{${$r_a}[0]};
 
     for (my $i=0; $i<$n; $i++) {
-	my $count = 0;
-	for (my $j=0; $j<$m; $j++) {
-	    if (${$r_a}[$i][$j] ne '-') {
-		$count ++;
-		${$r_get_pos}[$i][$j] = $count;
-		${${$r_get_j}[$i]}{$count} = $j;
-	    }
-	}
+        my $count = 0;
+        for (my $j=0; $j<$m; $j++) {
+            if (${$r_a}[$i][$j] ne '-') {
+                $count ++;
+                ${$r_get_pos}[$i][$j] = $count;
+                ${${$r_get_j}[$i]}{$count} = $j;
+            }
+        }
     }
 }
 
@@ -394,16 +394,16 @@ sub fasta_to_sorted_tsv {
     my $tmp = "";
     open(FASTA_TO_TSV, $fasta) || die;
     while (my $line = <FASTA_TO_TSV>) {
-	chomp($line);
-	if ($line =~ /^>/) {
-	    if ($tmp ne "") {
-		push @tsv, $tmp;
-	    }
-	    $tmp = "$line\t";
-	} else {
-	    $line =~ s/[-\s]//g;
-	    $tmp .= $line;
-	}
+        chomp($line);
+        if ($line =~ /^>/) {
+            if ($tmp ne "") {
+                push @tsv, $tmp;
+            }
+            $tmp = "$line\t";
+        } else {
+            $line =~ s/[-\s]//g;
+            $tmp .= $line;
+        }
     }
     push @tsv, $tmp;
     close(FASTA_TO_TSV);
@@ -424,16 +424,16 @@ sub create_get_pos {
 
     initialize_matrix($r_get_pos, $n, $m, ""); # Is this necessary?
     for (my $i=0; $i<$n; $i++) {
-	my $count = 0;
-	for (my $j=0; $j<$m; $j++) {
-	    if (${$r_b}[$i][$j] == 1) {
-		$count ++;
-		${$r_get_pos}[$i][$j] = $count;
-	    } else {
-		${$r_get_pos}[$i][$j] = 0; # if it is gap
-	    }
-	}
-	${$r_get_len}[$i] = $count;
+        my $count = 0;
+        for (my $j=0; $j<$m; $j++) {
+            if (${$r_b}[$i][$j] == 1) {
+                $count ++;
+                ${$r_get_pos}[$i][$j] = $count;
+            } else {
+                ${$r_get_pos}[$i][$j] = 0; # if it is gap
+            }
+        }
+        ${$r_get_len}[$i] = $count;
     }
 }
 
@@ -441,14 +441,14 @@ sub found_alignment_cache {
     my ($seq_file, $alignment_cache) = @_;
 
     if (! -f $alignment_cache) {
-	return 0;
+        return 0;
     }
 
     my $seq = fasta_to_sorted_tsv($seq_file);
     my $alignment = fasta_to_sorted_tsv($alignment_cache);
     if ($seq ne $alignment) {
-	print STDERR "WARNING: inconsistent alignment_cache $alignment_cache\n";
-	return 0;
+        print STDERR "WARNING: inconsistent alignment_cache $alignment_cache\n";
+        return 0;
     }
     
     return 1;
@@ -489,49 +489,49 @@ sub append_seq_to_alignments {
     # additional lengths needed (before and after)
     my $max_before_len = 0;
     for (my $i=0; $i<@alignment; $i++) {
-	if ($alignment[$i] =~ /^(-*)/) {
-	    my $start_gap_len = length($1);
-	    my $before_seq_len = length(${$r_before_seq}{$gene[$i]});
-	    if ($before_seq_len > $start_gap_len) {
-		my $required_len = $before_seq_len - $start_gap_len;
-		if ($required_len > $max_before_len) {
-		    $max_before_len = $required_len;
-		}
-	    }
-	}
+        if ($alignment[$i] =~ /^(-*)/) {
+            my $start_gap_len = length($1);
+            my $before_seq_len = length(${$r_before_seq}{$gene[$i]});
+            if ($before_seq_len > $start_gap_len) {
+                my $required_len = $before_seq_len - $start_gap_len;
+                if ($required_len > $max_before_len) {
+                    $max_before_len = $required_len;
+                }
+            }
+        }
     }
     my $max_after_len = 0;
     for (my $i=0; $i<@alignment; $i++) {
-	if ($alignment[$i] =~ /[^-](-*)$/) {
-	    my $end_gap_len = length($1);
-	    my $after_seq_len = length(${$r_after_seq}{$gene[$i]});
-	    if ($after_seq_len > $end_gap_len) {
-		my $required_len = $after_seq_len - $end_gap_len;
-		if ($required_len > $max_after_len) {
-		    $max_after_len = $required_len;
-		}
-	    }
-	}
+        if ($alignment[$i] =~ /[^-](-*)$/) {
+            my $end_gap_len = length($1);
+            my $after_seq_len = length(${$r_after_seq}{$gene[$i]});
+            if ($after_seq_len > $end_gap_len) {
+                my $required_len = $after_seq_len - $end_gap_len;
+                if ($required_len > $max_after_len) {
+                    $max_after_len = $required_len;
+                }
+            }
+        }
     }
 
     # append before_seq and after_seq
     open(TMP_ALIGNMENT, ">$tmp_alignment") || die;
     for (my $i=0; $i<@alignment; $i++) {
-	my $alignment = "-" x $max_before_len . $alignment[$i] . "-" x $max_after_len;
-	if ($alignment =~ /^(-*)/) {
-	    my $start_gap_len = length($1);
-	    $alignment =~ s/^-*//;
-	    my $start_gap_len_required = $start_gap_len - length(${$r_before_seq}{$gene[$i]});
-	    $alignment = "-" x $start_gap_len_required . ${$r_before_seq}{$gene[$i]} . $alignment;
-	}
-	if ($alignment =~ /[^-](-*)$/) {
-	    my $end_gap_len = length($1);
-	    $alignment =~ s/([^-])-*$/$1/;
-	    my $end_gap_len_required = $end_gap_len - length(${$r_after_seq}{$gene[$i]});
-	    $alignment = $alignment . ${$r_after_seq}{$gene[$i]} . "-" x $end_gap_len_required;
-	}
-	print TMP_ALIGNMENT ">", $gene[$i], "\n";
-	print TMP_ALIGNMENT $alignment, "\n";
+        my $alignment = "-" x $max_before_len . $alignment[$i] . "-" x $max_after_len;
+        if ($alignment =~ /^(-*)/) {
+            my $start_gap_len = length($1);
+            $alignment =~ s/^-*//;
+            my $start_gap_len_required = $start_gap_len - length(${$r_before_seq}{$gene[$i]});
+            $alignment = "-" x $start_gap_len_required . ${$r_before_seq}{$gene[$i]} . $alignment;
+        }
+        if ($alignment =~ /[^-](-*)$/) {
+            my $end_gap_len = length($1);
+            $alignment =~ s/([^-])-*$/$1/;
+            my $end_gap_len_required = $end_gap_len - length(${$r_after_seq}{$gene[$i]});
+            $alignment = $alignment . ${$r_after_seq}{$gene[$i]} . "-" x $end_gap_len_required;
+        }
+        print TMP_ALIGNMENT ">", $gene[$i], "\n";
+        print TMP_ALIGNMENT $alignment, "\n";
     }
     close(TMP_ALIGNMENT);
 }
@@ -548,49 +548,49 @@ sub append_seq_to_alignments_array {
     # additional lengths needed (before and after)
     my $max_before_len = 0;
     for (my $i=0; $i<@alignment; $i++) {
-	if ($alignment[$i] =~ /^(-*)/) {
-	    my $start_gap_len = length($1);
-	    my $before_seq_len = length(${$r_before_seq}[$i]);
-	    if ($before_seq_len > $start_gap_len) {
-		my $required_len = $before_seq_len - $start_gap_len;
-		if ($required_len > $max_before_len) {
-		    $max_before_len = $required_len;
-		}
-	    }
-	}
+        if ($alignment[$i] =~ /^(-*)/) {
+            my $start_gap_len = length($1);
+            my $before_seq_len = length(${$r_before_seq}[$i]);
+            if ($before_seq_len > $start_gap_len) {
+                my $required_len = $before_seq_len - $start_gap_len;
+                if ($required_len > $max_before_len) {
+                    $max_before_len = $required_len;
+                }
+            }
+        }
     }
     my $max_after_len = 0;
     for (my $i=0; $i<@alignment; $i++) {
-	if ($alignment[$i] =~ /[^-](-*)$/) {
-	    my $end_gap_len = length($1);
-	    my $after_seq_len = length(${$r_after_seq}[$i]);
-	    if ($after_seq_len > $end_gap_len) {
-		my $required_len = $after_seq_len - $end_gap_len;
-		if ($required_len > $max_after_len) {
-		    $max_after_len = $required_len;
-		}
-	    }
-	}
+        if ($alignment[$i] =~ /[^-](-*)$/) {
+            my $end_gap_len = length($1);
+            my $after_seq_len = length(${$r_after_seq}[$i]);
+            if ($after_seq_len > $end_gap_len) {
+                my $required_len = $after_seq_len - $end_gap_len;
+                if ($required_len > $max_after_len) {
+                    $max_after_len = $required_len;
+                }
+            }
+        }
     }
 
     # append before_seq and after_seq
     open(TMP_ALIGNMENT, ">$tmp_alignment") || die;
     for (my $i=0; $i<@alignment; $i++) {
-	my $alignment = "-" x $max_before_len . $alignment[$i] . "-" x $max_after_len;
-	if ($alignment =~ /^(-*)/) {
-	    my $start_gap_len = length($1);
-	    $alignment =~ s/^-*//;
-	    my $start_gap_len_required = $start_gap_len - length(${$r_before_seq}[$i]);
-	    $alignment = "-" x $start_gap_len_required . ${$r_before_seq}[$i] . $alignment;
-	}
-	if ($alignment =~ /[^-](-*)$/) {
-	    my $end_gap_len = length($1);
-	    $alignment =~ s/([^-])-*$/$1/;
-	    my $end_gap_len_required = $end_gap_len - length(${$r_after_seq}[$i]);
-	    $alignment = $alignment . ${$r_after_seq}[$i] . "-" x $end_gap_len_required;
-	}
-	print TMP_ALIGNMENT ">", $gene[$i], "\n";
-	print TMP_ALIGNMENT $alignment, "\n";
+        my $alignment = "-" x $max_before_len . $alignment[$i] . "-" x $max_after_len;
+        if ($alignment =~ /^(-*)/) {
+            my $start_gap_len = length($1);
+            $alignment =~ s/^-*//;
+            my $start_gap_len_required = $start_gap_len - length(${$r_before_seq}[$i]);
+            $alignment = "-" x $start_gap_len_required . ${$r_before_seq}[$i] . $alignment;
+        }
+        if ($alignment =~ /[^-](-*)$/) {
+            my $end_gap_len = length($1);
+            $alignment =~ s/([^-])-*$/$1/;
+            my $end_gap_len_required = $end_gap_len - length(${$r_after_seq}[$i]);
+            $alignment = $alignment . ${$r_after_seq}[$i] . "-" x $end_gap_len_required;
+        }
+        print TMP_ALIGNMENT ">", $gene[$i], "\n";
+        print TMP_ALIGNMENT $alignment, "\n";
     }
     close(TMP_ALIGNMENT);
 }
@@ -601,16 +601,16 @@ sub read_alignment_list {
     my $alignment = "";
     open(TMP_ALIGNMENT, $file) || die;
     while (<TMP_ALIGNMENT>) {
-	chomp;
-	if (/^>(.*)/) {
-	    if ($alignment) {
-		$alignment =~ s/\s//g;
-		push @{$r_a}, $alignment;
-		$alignment = "";
-	    }
-	} else {
-	    $alignment .= $_;
-	}
+        chomp;
+        if (/^>(.*)/) {
+            if ($alignment) {
+                $alignment =~ s/\s//g;
+                push @{$r_a}, $alignment;
+                $alignment = "";
+            }
+        } else {
+            $alignment .= $_;
+        }
     }
     $alignment =~ s/\s//g;
     push @{$r_a}, $alignment;
@@ -624,13 +624,13 @@ sub get_alignment_structure_from_file {
     my $r_gene_list = $opt{gene_list};
     my $n_seq;
     if ($r_gene_list and %{$r_gene_list}) {
-	$n_seq = read_alignment_for_gene($tmp_alignment_file, $r_a, $r_gene, $r_gene_list);
+        $n_seq = read_alignment_for_gene($tmp_alignment_file, $r_a, $r_gene, $r_gene_list);
     } else {
-	$n_seq = read_alignment($tmp_alignment_file, $r_a);
+        $n_seq = read_alignment($tmp_alignment_file, $r_a);
     }
     my $n_pos = check_alignment_length(\@{$r_a});
     if (@{$r_gene} != @{$r_a}) {
-	die "n_gene=" . scalar(@{$r_gene}) . ", n_row=" . scalar(@{$r_a});
+        die "n_gene=" . scalar(@{$r_gene}) . ", n_row=" . scalar(@{$r_a});
     }
     print STDERR " n_seq=$n_seq, n_pos=$n_pos\n";
 
@@ -650,16 +650,16 @@ sub map_domains_one_by_one {
 
     initialize_matrix($r_d, $n, $m, 0);
     for (my $i=0; $i<$n; $i++) {
-	my $gene = ${$r_gene}[$i];
-	my $begin_pos = ${$r_h_domain}{$gene}{$domain[$i]}{begin};
-	my $end_pos = ${$r_h_domain}{$gene}{$domain[$i]}{end};
-	my $cluster = ${$r_h_domain}{$gene}{$domain[$i]}{cluster};
-	my ($begin_j, $end_j) = get_j_of_domain(${$r_b}[$i], $begin_pos, $end_pos);
-	if (defined($begin_j) and defined($end_j)) {
-	    for (my $j=$begin_j; $j<=$end_j; $j++) {
-		${$r_d}[$i][$j] = $cluster;
-	    }
-	}
+        my $gene = ${$r_gene}[$i];
+        my $begin_pos = ${$r_h_domain}{$gene}{$domain[$i]}{begin};
+        my $end_pos = ${$r_h_domain}{$gene}{$domain[$i]}{end};
+        my $cluster = ${$r_h_domain}{$gene}{$domain[$i]}{cluster};
+        my ($begin_j, $end_j) = get_j_of_domain(${$r_b}[$i], $begin_pos, $end_pos);
+        if (defined($begin_j) and defined($end_j)) {
+            for (my $j=$begin_j; $j<=$end_j; $j++) {
+                ${$r_d}[$i][$j] = $cluster;
+            }
+        }
     }
 }
 
@@ -673,33 +673,33 @@ sub get_j_of_domain {
     
     my $count = 0;
     for (my $j=0; $j<$m; $j++) {
-	if (${$r_b}[$j] == 1) {
-	    $count ++;
+        if (${$r_b}[$j] == 1) {
+            $count ++;
 
-	    if ($count == 1) {
-		$seq_begin_j = $j;
-	    }
-	    $seq_end_j = $j;
-	    
-	    if ($begin_pos and $begin_pos == $count) {
-		$begin_j = $j;
-	    }
-	    if ($end_pos and $end_pos == $count) {
-		$end_j = $j;
-	    }
-	}
+            if ($count == 1) {
+                $seq_begin_j = $j;
+            }
+            $seq_end_j = $j;
+            
+            if ($begin_pos and $begin_pos == $count) {
+                $begin_j = $j;
+            }
+            if ($end_pos and $end_pos == $count) {
+                $end_j = $j;
+            }
+        }
     }
 
     if (defined($begin_j) and defined($end_j)) {
-	return ($begin_j, $end_j);
+        return ($begin_j, $end_j);
     } elsif (defined($begin_j) and ! defined($end_j)) {
-	return ($begin_j, $seq_end_j);
+        return ($begin_j, $seq_end_j);
     } elsif (! defined($begin_j) and defined($end_j)) {
-	return ($seq_begin_j, $end_j);
+        return ($seq_begin_j, $end_j);
     } elsif (! defined($begin_j) and ! defined($end_j)) {
-	return;
+        return;
     } else {
-	die;
+        die;
     }
 }
 
@@ -711,34 +711,34 @@ sub read_alignment_for_gene {
     my $entry_id = "";
     open(F, $file) || die;
     while (<F>) {
-	chomp;
-	if (/^>(\S+)/) {
-	    $entry_id = $1;
-	    if ($alignment) {
-		$alignment =~ s/\s//g;
-		my @a = split //, $alignment;
-		push @{$r_a}, \@a;
-		$alignment = "";
-	    }
-	    if (${$r_gene_list}{$entry_id}) {
-		push @{$r_gene}, $entry_id;
-	    }
-	} elsif (/^>/) {
-	    die;
-	} else {
-	    if ($entry_id ne "") {
-		if (${$r_gene_list}{$entry_id}) {
-		    $alignment .= $_;
-		}
-	    } else {
-		die;
-	    }
-	}
+        chomp;
+        if (/^>(\S+)/) {
+            $entry_id = $1;
+            if ($alignment) {
+                $alignment =~ s/\s//g;
+                my @a = split //, $alignment;
+                push @{$r_a}, \@a;
+                $alignment = "";
+            }
+            if (${$r_gene_list}{$entry_id}) {
+                push @{$r_gene}, $entry_id;
+            }
+        } elsif (/^>/) {
+            die;
+        } else {
+            if ($entry_id ne "") {
+                if (${$r_gene_list}{$entry_id}) {
+                    $alignment .= $_;
+                }
+            } else {
+                die;
+            }
+        }
     }
     if ($alignment) {
-	$alignment =~ s/\s//g;
-	my @a = split //, $alignment;
-	push @{$r_a}, \@a;
+        $alignment =~ s/\s//g;
+        my @a = split //, $alignment;
+        push @{$r_a}, \@a;
     }
     return @{$r_a};
 }
@@ -748,10 +748,10 @@ sub check_alignment_length {
 
     my $length = @{${$r_a}[0]};
     for (my $i=0; $i<@{$r_a}; $i++) {
-	my $length2 = @{${$r_a}[$i]};
-	if ($length2 != $length) {
-	    die "$length != $length2";
-	}
+        my $length2 = @{${$r_a}[$i]};
+        if ($length2 != $length) {
+            die "$length != $length2";
+        }
     }
 
     return $length;
@@ -766,36 +766,36 @@ sub summarize_amino_acid_frequency {
     my %f = ();
     for (my $j=0; $j<$m; $j++) {
 # 	my $count_b = 0;
-	for (my $i=0; $i<$n; $i++) {
-	    if (${$r_a}[$i][$j] ne "-") {
-		${$r_b}[$i][$j] = 1;
+        for (my $i=0; $i<$n; $i++) {
+            if (${$r_a}[$i][$j] ne "-") {
+                ${$r_b}[$i][$j] = 1;
 # 		$count_b ++;
-	    } else {
-		${$r_b}[$i][$j] = 0;
-	    }
-	    $f{$j}{${$r_a}[$i][$j]}++;
-	}
-	if (! $f{$j}{"-"}) {
-	    $f{$j}{"-"} = 0;
-	}
-	for my $a (keys %{$f{$j}}) {
-	    ${$r_p}{$j}{$a} = $f{$j}{$a}/$n;
+            } else {
+                ${$r_b}[$i][$j] = 0;
+            }
+            $f{$j}{${$r_a}[$i][$j]}++;
+        }
+        if (! $f{$j}{"-"}) {
+            $f{$j}{"-"} = 0;
+        }
+        for my $a (keys %{$f{$j}}) {
+            ${$r_p}{$j}{$a} = $f{$j}{$a}/$n;
 # 	    ${$r_p}{$j}{$a} = $f{$j}{$a}/$count_b;
-	}
+        }
     }
 
     # check terminal gaps
     for (my $i=0; $i<$n; $i++) {
-	my $j = 0;
-	while (${$r_a}[$i][$j] eq "-" and $j<$m) {
-	    ${$r_b}[$i][$j] = -1;
-	    $j ++;
-	}
-	$j = $m - 1;
-	while (${$r_a}[$i][$j] eq "-" and $j>=0) {
-	    ${$r_b}[$i][$j] = -1;
-	    $j --;
-	}
+        my $j = 0;
+        while (${$r_a}[$i][$j] eq "-" and $j<$m) {
+            ${$r_b}[$i][$j] = -1;
+            $j ++;
+        }
+        $j = $m - 1;
+        while (${$r_a}[$i][$j] eq "-" and $j>=0) {
+            ${$r_b}[$i][$j] = -1;
+            $j --;
+        }
     }
 
 }
@@ -807,18 +807,18 @@ sub add_domain_number {
     chomp(@alignment);
 
     for (my $i=0; $i<@alignment; $i++) {
-	if ($alignment[$i] =~ /^>\S+/) {
-	    if ($alignment[$i] =~ /^>(\S+) (\S+)/) {
-		my ($gene, $domain) = ($1, $2);
-		if ($domain eq "0") {
-		    $alignment[$i] = ">$gene";
-		} else {
-		    $alignment[$i] = ">$gene($domain)";
-		}
-	    } else {
-		die $alignment[$i];
-	    }
-	}
+        if ($alignment[$i] =~ /^>\S+/) {
+            if ($alignment[$i] =~ /^>(\S+) (\S+)/) {
+                my ($gene, $domain) = ($1, $2);
+                if ($domain eq "0") {
+                    $alignment[$i] = ">$gene";
+                } else {
+                    $alignment[$i] = ">$gene($domain)";
+                }
+            } else {
+                die $alignment[$i];
+            }
+        }
     }
     
     # overwite tmp_alignment
@@ -832,15 +832,15 @@ sub subtract_geneset {
 
     my %checked = ();
     for my $gene (@{$r_genes_1}) {
-	$checked{$gene} = 1;
+        $checked{$gene} = 1;
     }
 
     my @diff = ();
     for my $gene (@{$r_genes_2}) {
-	if ($checked{$gene}) {
-	} else {
-	    push @diff, $gene;
-	}
+        if ($checked{$gene}) {
+        } else {
+            push @diff, $gene;
+        }
     }
 
     return @diff;
