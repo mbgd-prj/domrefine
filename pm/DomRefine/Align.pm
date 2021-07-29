@@ -99,6 +99,8 @@ sub aligner {
         system "t_coffee $seq_file -mode regular -outfile=$TMP_ALIGNMENT_BY_ALIGNER -output=fasta_aln > /dev/null 2> $alignment_file.err";
     } elsif ($aligner eq "t_coffee_quick") {
         system "t_coffee $seq_file -mode quickaln -outfile=$alignment_file -output=fasta_aln > /dev/null 2> $alignment_file.err";
+    } elsif ($aligner eq "famsa") {
+        system "famsa-1.6.1-linux-static $seq_file $alignment_file 2> $alignment_file.err";
     }
 
     if ($aligner =~ /^(clustalw|t_coffee|t_coffee_quick)$/) {
