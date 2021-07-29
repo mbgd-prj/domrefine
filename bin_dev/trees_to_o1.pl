@@ -45,34 +45,34 @@ get_dclst_structure($CLUSTER_FILE, \%CLUSTER, \%DOMAIN);
 if ($OPT{h} and -s $OPT{h}) {
     open(HOMCLUSTER_CLUSTER, "$OPT{h}") || die;
     while (<HOMCLUSTER_CLUSTER>) {
-	my ($homcluster, $cluster) = split;
-	if ($HOMCLUSTER_CLUSTER{$homcluster}) {
-	    push @{$HOMCLUSTER_CLUSTER{$homcluster}}, $cluster;
-	} else {
-	    $HOMCLUSTER_CLUSTER{$homcluster} = [$cluster];
-	}
+        my ($homcluster, $cluster) = split;
+        if ($HOMCLUSTER_CLUSTER{$homcluster}) {
+            push @{$HOMCLUSTER_CLUSTER{$homcluster}}, $cluster;
+        } else {
+            $HOMCLUSTER_CLUSTER{$homcluster} = [$cluster];
+        }
     }
     close(HOMCLUSTER_CLUSTER);
 
     for my $homcluster (sort {$a <=> $b} keys %HOMCLUSTER_CLUSTER) {
-	my @out = ();
-	for my $cluster (sort {$a <=> $b} @{$HOMCLUSTER_CLUSTER{$homcluster}}) {
-	    my $out = output_cluster_tree($TREE_DIR, $cluster);
-	    if ($out) {
-		push @out, $out;
-	    }
-	}
-	if (@out) {
-	    print "HomCluster $homcluster\n";
-	    print @out;
-	}
+        my @out = ();
+        for my $cluster (sort {$a <=> $b} @{$HOMCLUSTER_CLUSTER{$homcluster}}) {
+            my $out = output_cluster_tree($TREE_DIR, $cluster);
+            if ($out) {
+                push @out, $out;
+            }
+        }
+        if (@out) {
+            print "HomCluster $homcluster\n";
+            print @out;
+        }
     }
 } else {
     for my $cluster (sort {$a cmp $b} keys %CLUSTER) {
-	my $out = output_cluster_tree($TREE_DIR, $cluster);
-	if ($out) {
-	    print $out;
-	}
+        my $out = output_cluster_tree($TREE_DIR, $cluster);
+        if ($out) {
+            print $out;
+        }
     }
 }
 
@@ -83,8 +83,8 @@ sub output_cluster_tree {
     my ($tree_dir, $cluster) = @_;
 
     if (! -s "$tree_dir/$cluster.out") {
-	print STDERR "WARNING: no output for Cluster $cluster\n";
-	return;
+        print STDERR "WARNING: no output for Cluster $cluster\n";
+        return;
     }
 
     my ($score, $dist, $score_txt, $dist_txt);
@@ -93,33 +93,33 @@ sub output_cluster_tree {
     my @cluster_tree = <CLUSTER_TREE>;
     close(CLUSTER_TREE);
     for (my $i=0; $i<@cluster_tree; $i++) {
-	if ($cluster_tree[$i] =~ /^#score\t(\S+)/) {
-	    $score = $1;
-	    $score_txt = "score=$score";
-	} elsif ($cluster_tree[$i] =~ /^#dist\t(\S+)/) {
-	    $dist = $1;
-	    $dist_txt = "dist=$dist";
-	} elsif ($cluster_tree[$i] =~ /^#/) {
-	} else {
-	    $tree .= $cluster_tree[$i];
-	}
+        if ($cluster_tree[$i] =~ /^#score\t(\S+)/) {
+            $score = $1;
+            $score_txt = "score=$score";
+        } elsif ($cluster_tree[$i] =~ /^#dist\t(\S+)/) {
+            $dist = $1;
+            $dist_txt = "dist=$dist";
+        } elsif ($cluster_tree[$i] =~ /^#/) {
+        } else {
+            $tree .= $cluster_tree[$i];
+        }
     }
 
     if ($tree eq "") {
-	print STDERR "ERROR: no tree for Cluster $cluster\n";
-	return;
+        print STDERR "ERROR: no tree for Cluster $cluster\n";
+        return;
     }
 
     my $out = "Cluster $cluster";
     my @score_dist_txt = ();
     if ($score_txt) {
-	push @score_dist_txt, $score_txt;
+        push @score_dist_txt, $score_txt;
     }
     if ($dist_txt) {
-	push @score_dist_txt, $dist_txt;
+        push @score_dist_txt, $dist_txt;
     }
     if (@score_dist_txt) {
-	$out .= " [@score_dist_txt]";
+        $out .= " [@score_dist_txt]";
     }
     $out .= "\n";
     $out .= "$tree";
