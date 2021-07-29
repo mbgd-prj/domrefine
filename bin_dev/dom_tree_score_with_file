@@ -9,7 +9,8 @@ my $USAGE=
 -o 11: output tree in o11 format
 -N: Newick
 -v: verbose
--u: unset DOMREFINE_READ_ALIGNMENT_CACHE and DOMREFINE_WRITE_ALIGNMENT_CACHE
+-u: unset DOMREFINE_READ_ALIGNMENT_CACHE
+-U: unset DOMREFINE_WRITE_ALIGNMENT_CACHE
 -f Newick_cache_file
 -S: do not calculate score
 ";
@@ -23,10 +24,12 @@ use DomRefine::Tree;
 
 ### Settings ###
 my %OPT;
-getopts('o:Nvuf:Sd:', \%OPT);
+getopts('o:NvuUf:Sd:', \%OPT);
 
 if ($OPT{u}) {
     $ENV{DOMREFINE_READ_ALIGNMENT_CACHE} = 0;
+}
+if ($OPT{U}) {
     $ENV{DOMREFINE_WRITE_ALIGNMENT_CACHE} = 0;
 }
 

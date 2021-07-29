@@ -9,7 +9,8 @@ my $USAGE=
 -o 11: output tree in o11 format
 -N: Newick
 -v: verbose
--u: unset DOMREFINE_READ_ALIGNMENT_CACHE and DOMREFINE_WRITE_ALIGNMENT_CACHE
+-u: unset DOMREFINE_READ_ALIGNMENT_CACHE
+-U: unset DOMREFINE_WRITE_ALIGNMENT_CACHE
 ";
 # -d SEQ_DB
 
@@ -21,10 +22,12 @@ use DomRefine::Tree;
 
 ### Settings ###
 my %OPT;
-getopts('o:Nvud:', \%OPT);
+getopts('o:NvuUd:', \%OPT);
 
 if ($OPT{u}) {
     $ENV{DOMREFINE_READ_ALIGNMENT_CACHE} = 0;
+}
+if ($OPT{U}) {
     $ENV{DOMREFINE_WRITE_ALIGNMENT_CACHE} = 0;
 }
 

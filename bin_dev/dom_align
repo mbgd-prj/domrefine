@@ -8,7 +8,8 @@ my $USAGE=
 -r: align region only
 -R: align only region
 -D: domain by domain
--u: unset DOMREFINE_READ_ALIGNMENT_CACHE and DOMREFINE_WRITE_ALIGNMENT_CACHE
+-u: unset DOMREFINE_READ_ALIGNMENT_CACHE
+-U: unset DOMREFINE_WRITE_ALIGNMENT_CACHE
 ";
 # -d SEQ_DB
 # -p ALIGNER
@@ -18,10 +19,12 @@ use DomRefine::Align;
 
 ### Settings ###
 my %OPT;
-getopts('rRDud:p:', \%OPT);
+getopts('rRDuUd:p:', \%OPT);
 
 if ($OPT{u}) {
     $ENV{DOMREFINE_READ_ALIGNMENT_CACHE} = 0;
+}
+if ($OPT{U}) {
     $ENV{DOMREFINE_WRITE_ALIGNMENT_CACHE} = 0;
 }
 
