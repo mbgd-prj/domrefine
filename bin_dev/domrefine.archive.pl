@@ -60,16 +60,16 @@ if (! -e $DIR_NEW) {
 ### copy files ###
 for my $cluster (@CLUSTER_LIST) {
     if ($CLUSTER_SIZE{$cluster}) {
-	if ($CLUSTER_SIZE{$cluster} >= $OPT{n}) {
-	    if (-s "$DIR/$cluster.$EXT") {
-		if (! -s "$DIR_NEW/$cluster.$EXT_NEW") {
-		    system "cp -a $DIR/$cluster.$EXT $DIR_NEW/$cluster.$EXT_NEW";
-		}
-	    } else {
-		print STDERR "WARNING: no output for cluster $cluster\n";
-	    }
-	}
+        if ($CLUSTER_SIZE{$cluster} >= $OPT{n}) {
+            if (-s "$DIR/$cluster.$EXT") {
+                if (! -s "$DIR_NEW/$cluster.$EXT_NEW") {
+                    system "cp -a $DIR/$cluster.$EXT $DIR_NEW/$cluster.$EXT_NEW";
+                }
+            } else {
+                print STDERR "WARNING: no output for cluster $cluster\n";
+            }
+        }
     } else {
-	print STDERR "WARNING: size of cluster $cluster is unknown\n";
+        print STDERR "WARNING: size of cluster $cluster is unknown\n";
     }
 }
