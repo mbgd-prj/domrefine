@@ -165,13 +165,13 @@ if ($ENV{DOMREFINE_SAVE_ARCHIVE}) {
     if (-s "cluster.domrefine.o11.list" and -s "cluster.domrefine.size") {
         my $archive_prefix = $ENV{DOMREFINE_SAVE_ARCHIVE};
         my $start_time = time;
-        if (-d "cluster.domrefine.alignment" and ! -s "${archive_prefix}.clustalo.tar.gz") {
-            system "cat cluster.domrefine.o11.list | domrefine.archive.pl -a -s cluster.domrefine.size -n 2 cluster.domrefine.alignment ${archive_prefix}.clustalo";
-            system "tar zcf ${archive_prefix}.clustalo.tar.gz ${archive_prefix}.clustalo";
+        if (-d "cluster.domrefine.alignment" and ! -s "${archive_prefix}.alignment.tar.gz") {
+            system "cat cluster.domrefine.o11.list | domrefine.archive.pl -a -s cluster.domrefine.size -n 2 cluster.domrefine.alignment ${archive_prefix}.alignment";
+            system "tar zcf ${archive_prefix}.alignment.tar.gz ${archive_prefix}.alignment";
         }
-        if (-d "cluster.domrefine.newick" and ! -s "${archive_prefix}.fasttree.tar.gz") {
-            system "cat cluster.domrefine.o11.list | domrefine.archive.pl -N -s cluster.domrefine.size -n 2 cluster.domrefine.newick ${archive_prefix}.fasttree";
-            system "tar zcf ${archive_prefix}.fasttree.tar.gz ${archive_prefix}.fasttree";
+        if (-d "cluster.domrefine.newick" and ! -s "${archive_prefix}.tree.tar.gz") {
+            system "cat cluster.domrefine.o11.list | domrefine.archive.pl -N -s cluster.domrefine.size -n 2 cluster.domrefine.newick ${archive_prefix}.tree";
+            system "tar zcf ${archive_prefix}.tree.tar.gz ${archive_prefix}.tree";
         }
         my $end_time = time;
         printf STDERR "archive:\t%.2f\tmin\n", ($end_time - $start_time)/60;
