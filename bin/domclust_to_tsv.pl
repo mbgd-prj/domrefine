@@ -18,7 +18,6 @@ while (<>) {
     chomp;
     if (/^Cluster (\S+)/) {
 	$CLUSTER = $1;
-    } elsif (/^HomCluster (\S+)/) {
     } elsif (/^(\S+:\S+) (\-?\d+) (\-?\d+)$/) {
 	my ($gene, $start, $end) = ($1, $2, $3);
 	my $domain = 0;
@@ -28,6 +27,7 @@ while (<>) {
 	}
 	print "$CLUSTER $gene $domain $start $end\n";
     } elsif (/^$/) {
+    } elsif (/^(Hom|Sub)Cluster (\S+)/) {
     } else {
 	die $_;
     }
