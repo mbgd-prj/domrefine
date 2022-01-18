@@ -5,6 +5,9 @@ use Getopt::Std;
 my $PROGRAM = basename $0;
 my $USAGE=
 "Usage: $PROGRAM ALIGNMENT_FILE
+-e THRESHOLD: less than or equal to threshold
+-l THRESHOLD: less than threshold
+default threshold: less than or equal to -0.5
 ";
 
 use DomRefine::Read;
@@ -14,12 +17,7 @@ use DomRefine::General;
 
 ### Settings ###
 my %OPT;
-getopts('s:', \%OPT);
-
-my $SCORE_THRESHOLD = -0.5;
-if (defined $OPT{s}) {
-    $SCORE_THRESHOLD = $OPT{s};
-}
+getopts('e:l:', \%OPT);
 
 if (!@ARGV) {
     print STDERR $USAGE;
@@ -30,31 +28,54 @@ my @ALIGNMENT = ();
 my ($DCLST, @GENE) = read_and_parse_alignment($ALIGNMENT_FILE);
 
 ### Main ###
-my @score_for_line = dsp_score_dclst($DCLST, $ALIGNMENT_FILE, lines => 1);
-chomp(@score_for_line);
-if (@ALIGNMENT != @score_for_line) {
+my @SCORE_FOR_LINE = dsp_score_dclst($DCLST, $ALIGNMENT_FILE, lines => 1);
+chomp(@SCORE_FOR_LINE);
+if (@ALIGNMENT != @SCORE_FOR_LINE) {
     die;
 }
 
-my $count = 0;
-my $n = @score_for_line;
+my $COUNT = 0;
 my $LOG = "";
-for (my $i=0; $i<@score_for_line; $i++) {
-    $LOG .= $score_for_line[$i] . "\t" . $GENE[$i];
-    if ($score_for_line[$i] <= $SCORE_THRESHOLD) {
+for (my $i=0; $i<@SCORE_FOR_LINE; $i++) {
+    $LOG .= $SCORE_FOR_LINE[$i] . "\t" . $GENE[$i];
+    if (should_be_removed($SCORE_FOR_LINE[$i])) {
         $LOG .= "\tREMOVED";
-        $count ++;
+        $COUNT ++;
     } else {
         print $ALIGNMENT[$i];
     }
     $LOG .= "\n";
 }
-print STDERR "removed $count out of " , scalar(@ALIGNMENT) , " sequences\n";
+print STDERR "removed $COUNT out of " , scalar(@ALIGNMENT) , " sequences\n";
 print STDERR $LOG;
 
 ################################################################################
 ### Function ###################################################################
 ################################################################################
+
+sub should_be_removed {
+    my ($score) = @_;
+
+    if (defined $OPT{e}) {
+        if ($score <= $OPT{e}) {
+            return 1;
+        } else {
+            return 0;
+        }
+    } elsif (defined $OPT{l}) {
+        if ($score < $OPT{l}) {
+            return 1;
+        } else {
+            return 0;
+        }
+    } else {
+        if ($score <= -0.5) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+}
 
 sub read_and_parse_alignment {
     my ($alignment_file) = @_;
