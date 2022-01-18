@@ -14,11 +14,7 @@ use DomRefine::General;
 
 ### Settings ###
 my %OPT;
-getopts('tB:s:r', \%OPT);
-
-if ($OPT{B}) {
-    read_score_matrix("$ENV{DOMREFINE_DIR}/lib/BLOSUM$OPT{B}");
-}
+getopts('s:', \%OPT);
 
 my $SCORE_THRESHOLD = -0.5;
 if (defined $OPT{s}) {
@@ -30,30 +26,31 @@ if (!@ARGV) {
     exit 1;
 }
 my ($ALIGNMENT_FILE) = @ARGV;
-
-my ($ALIGNMENT, $DCLST, @GENE) = read_and_parse_alignment($ALIGNMENT_FILE);
-my @ALIGNMENT = split("\n>", $ALIGNMENT);
-$ALIGNMENT[0] =~ s/^>//;
-chomp(@ALIGNMENT);
+my @ALIGNMENT = ();
+my ($DCLST, @GENE) = read_and_parse_alignment($ALIGNMENT_FILE);
 
 ### Main ###
 my @score_for_line = dsp_score_dclst($DCLST, $ALIGNMENT_FILE, lines => 1);
 chomp(@score_for_line);
+if (@ALIGNMENT != @score_for_line) {
+    die;
+}
 
 my $count = 0;
 my $n = @score_for_line;
+my $LOG = "";
 for (my $i=0; $i<@score_for_line; $i++) {
-    my $gene = $i + 1;
-    print STDERR $score_for_line[$i], "\t", $GENE[$i];
+    $LOG .= $score_for_line[$i] . "\t" . $GENE[$i];
     if ($score_for_line[$i] <= $SCORE_THRESHOLD) {
-        print STDERR "\tREMOVED";
+        $LOG .= "\tREMOVED";
         $count ++;
     } else {
-        print ">", $ALIGNMENT[$i], "\n";
+        print $ALIGNMENT[$i];
     }
-    print STDERR "\n";
+    $LOG .= "\n";
 }
-print STDERR "Removed $count out of $n sequences\n";
+print STDERR "removed $count out of " , scalar(@ALIGNMENT) , " sequences\n";
+print STDERR $LOG;
 
 ################################################################################
 ### Function ###################################################################
@@ -69,34 +66,39 @@ sub read_and_parse_alignment {
         die;
     }
 
-    my $alignment = "";
+    my $i = 0;
     my $dclst = "";
     my @gene = ();
 
     my $len = 0;
     open(FILE, $alignment_file) || die;
-    while (<FILE>) {
-        $alignment .= $_;
-        chomp;
-        if (/^>/) {
-            if (/^>(\S+)$/) {
+    while (my $line_org = <FILE>) {
+        my $line = $line_org;
+        chomp($line);
+        if ($line =~ /^>/) {
+            if ($line =~ /^>(\S+)$/) {
                 my $gene = $1;
                 push @gene, $gene;
                 if ($len) {
                     $dclst .= "$len\n";
+                    $len = 0;
                 }
                 $dclst .= "$cluster $gene 0 1 ";
-                $len = 0;
+                if (@ALIGNMENT) {
+                    $i++;
+                }
+                $ALIGNMENT[$i] = "";
             } else {
                 die;
             }
         } else {
-            s/-//g;
-            $len += length;
-        }    
+            $line =~ s/-//g;
+            $len += length($line);
+        }
+        $ALIGNMENT[$i] .= $line_org;
     }
     close(FILE);
     $dclst .= "$len\n";
 
-    return ($alignment, $dclst, @gene);
+    return ($dclst, @gene);
 }
