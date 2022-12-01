@@ -54,9 +54,9 @@ if [ -e "$DOMREFINE_DIR/bin" ] &&  [ -e "$DOMREFINE_DIR/bin_dev" ] &&  [ -e "$DO
     export DOMREFINE_QUEUE_SIZE=100 # overwritten by -n
     export DOMREFINE_QUEUE_CHECK_INTERVAL=10
     export DOMREFINE_QSUB_UNIT=10 # overwritten by -u
-    export DOMREFINE_QSUB_OPT='-l mem=18G'
+    #export DOMREFINE_QSUB_OPT='-l mem=18G'
     #export DOMREFINE_QSUB_OPT='-l ncpus=2 -l mem=18G'
-    #export DOMREFINE_QSUB_OPT=''
+    export DOMREFINE_QSUB_OPT=''
     export DOMREFINE_LARGE_QUEUE=smpl # overwritten by -Q
     if [ -d "cache" ]; then
 	export DOMREFINE_CACHE=$(pwd)/cache # overwritten by CURRENT_DIR or -c
