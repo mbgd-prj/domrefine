@@ -13,7 +13,6 @@ DOMREFINE_QUEUE is used as the default queue when -q is not specified
 DOMREFINE_QSUB_TMP is used as SGE in/out directory
 DOMREFINE_QSUB_OPT is used as additional qsub options
 ";
-# DOMREFINE_PROJECT_NAME is used for qsub -P option
 
 use DomRefine::Read;
 

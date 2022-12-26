@@ -5,7 +5,6 @@
 # -n MAX_JOBS
 # -c CACH_DIR
 # -p PROGRAM : alignment program (default: clustal omega 1.2)
-# -P PROJECT_NAME
 # -a : save final alignment (default: off)
 # -t : save final tree (default: off)
 # -O : save final tree in o11 format (default: off)
@@ -36,7 +35,6 @@ if [ -e "$DOMREFINE_DIR/bin" ] &&  [ -e "$DOMREFINE_DIR/bin_dev" ] &&  [ -e "$DO
     export DOMREFINE_READ_TREE_CACHE=1
     export DOMREFINE_WRITE_TREE_CACHE=1
     export DOMREFINE_ALIGNER=clustalo1.2order # overwritten by -p ; the aligner is executed in pm/DomRefine/Align.pm
-    export DOMREFINE_PROJECT_NAME=domrefine # overwritten by -P
     export DOMREFINE_SAVE_ALIGNMENT=0 # overwritten by -a
     export DOMREFINE_SAVE_TREE=0 # overwritten by -t
     export DOMREFINE_SAVE_O11=0 # overwritten by -O
@@ -81,7 +79,6 @@ if [ -e "$DOMREFINE_DIR/bin" ] &&  [ -e "$DOMREFINE_DIR/bin_dev" ] &&  [ -e "$DO
 	    u ) DOMREFINE_QSUB_UNIT=$OPTARG;;
 	    c ) DOMREFINE_CACHE=$OPTARG; DOMREFINE_CACHE_FORCE_CREATE=$OPTARG;;
 	    p ) DOMREFINE_ALIGNER=$OPTARG;;
-	    P ) DOMREFINE_PROJECT_NAME=$OPTARG;;
 	    a ) DOMREFINE_SAVE_ALIGNMENT=1;;
 	    t ) DOMREFINE_SAVE_TREE=1;;
 	    O ) DOMREFINE_SAVE_O11=1;;
