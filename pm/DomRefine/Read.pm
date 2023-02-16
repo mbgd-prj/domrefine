@@ -672,7 +672,7 @@ sub read_seq {
             close(BLDB);
         }
     } else {
-        die "\nInvalid value for DOMREFINE_SEQ_DB";
+        die "\nInvalid value for DOMREFINE_SEQ_DB: $ENV{DOMREFINE_SEQ_DB}";
     }
     my $end_time = time;
     printf STDERR " %d sec\n", $end_time - $start_time;
