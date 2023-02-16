@@ -16,6 +16,9 @@ getopts('', \%OPT);
 my $CLUSTER = "";
 while (<>) {
     chomp;
+    if (/^#/) {
+        next;
+    }
     if (/^Cluster (\S+)/) {
 	$CLUSTER = $1;
     } elsif (/^(\S+:\S+) (\-?\d+) (\-?\d+)$/) {
