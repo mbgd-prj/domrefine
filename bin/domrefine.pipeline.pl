@@ -43,6 +43,8 @@ if (! $ENV{DOMREFINE_FAST_MERGE}) {
 
 if (! -e "cluster") {
     if ($INPUT_FILE eq "cluster") {
+    } elsif ($INPUT_FILE =~ /\/cluster$/) {
+        system "ln -s $INPUT_FILE cluster";
     } elsif ($INPUT_FILE =~ /\.o0$/) {
         system "cat $INPUT_FILE | domclust_to_tsv.pl > cluster";
     } elsif ($INPUT_FILE =~ /\.o11$/) {
@@ -52,7 +54,7 @@ if (! -e "cluster") {
     } elsif ($INPUT_FILE =~ /\.dclst.gz$/) {
         system "cat $INPUT_FILE | gunzip | domrefine.dclst_to_files.pl";
     } else {
-        system "ln -s $INPUT_FILE cluster";
+        system "cat $INPUT_FILE | domclust_to_tsv.pl > cluster";
     }
 }
 if (-s "cluster" and (! -s "cluster.checked" || ! -f "cluster.checked.log")) {
