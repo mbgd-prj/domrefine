@@ -164,25 +164,35 @@ sub merge {
 	    if ($homology_info !~ /^\//) {
 		$homology_info = "$pwd/$homology_info";
 	    }
-	    $command = "sge.pl -N merge -q $large_queue 'cat $homology_info | $stepwise_merge_command > $pwd/${tmp_cluster}.merge.out 2> $pwd/${tmp_cluster}.merge.log'";
+            if ($large_queue eq "local") {
+                system "cat $homology_info | $stepwise_merge_command > ${tmp_cluster}.merge.out 2> ${tmp_cluster}.merge.log";
+            } else {
+                $command = "sge.pl -N merge -q $large_queue 'cat $homology_info | $stepwise_merge_command > $pwd/${tmp_cluster}.merge.out 2> $pwd/${tmp_cluster}.merge.log'";
+            }
 	} elsif ($ENV{DOMREFINE_HOMOLOGY_DIR}) {
 	    my $homology_dir = $ENV{DOMREFINE_HOMOLOGY_DIR};
 	    if ($homology_dir !~ /^\//) {
 		$homology_dir = "$pwd/$homology_dir";
 	    }
 	    my $select_command = "source /db/project/MBGD/etc/profile.mbgd && /db/project/MBGD/WWW/bin/select.pl -DIR=$homology_dir -SPEC=$sp_list -EVAL=0.001 -SCORE=60 -tabout";
-	    $command = "sge.pl -N merge -q $large_queue '$select_command 2> $pwd/${tmp_cluster}.tabout.log | $stepwise_merge_command > $pwd/${tmp_cluster}.merge.out 2> $pwd/${tmp_cluster}.merge.log'";
+            if ($large_queue eq "local") {
+                system "$select_command 2> $pwd/${tmp_cluster}.tabout.log | $stepwise_merge_command > ${tmp_cluster}.merge.out 2> ${tmp_cluster}.merge.log";
+            } else {
+                $command = "sge.pl -N merge -q $large_queue '$select_command 2> $pwd/${tmp_cluster}.tabout.log | $stepwise_merge_command > $pwd/${tmp_cluster}.merge.out 2> $pwd/${tmp_cluster}.merge.log'";
+            }
 	} else {
 	    die;
 	}
-	open(MERGE_COMMAND, ">$pwd/${tmp_cluster}.merge.command") || die;
-	print MERGE_COMMAND "$command\n";
-	close(MERGE_COMMAND);
-	my $submitted_job = `$command`;
-	open(SUBMITTED_JOB, ">$pwd/${tmp_cluster}.merge.job") || die;
-	print SUBMITTED_JOB $submitted_job;
-	close(SUBMITTED_JOB);
-	system "sge_check_jobs.pl -N -n0 $pwd/${tmp_cluster}.merge.job > $pwd/${tmp_cluster}.merge.job.check";
+        if ($large_queue ne "local") {
+            open(MERGE_COMMAND, ">$pwd/${tmp_cluster}.merge.command") || die;
+            print MERGE_COMMAND "$command\n";
+            close(MERGE_COMMAND);
+            my $submitted_job = `$command`;
+            open(SUBMITTED_JOB, ">$pwd/${tmp_cluster}.merge.job") || die;
+            print SUBMITTED_JOB $submitted_job;
+            close(SUBMITTED_JOB);
+            system "sge_check_jobs.pl -N -n0 $pwd/${tmp_cluster}.merge.job > $pwd/${tmp_cluster}.merge.job.check";
+        }
 	system "cat ${tmp_cluster}.merge.log | grep '^MERGED: ' | perl -pe 's/^MERGED: //' | links_to_clustersets.pl -n | sort -k1,1nr > ${tmp_cluster}.clusterset.merged";
     }
     system "cat ${tmp_cluster}.merge.out | dom_renumber | dom_renumber -c > ${tmp_cluster}.merge.out.renumber";
