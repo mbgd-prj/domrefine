@@ -5,11 +5,10 @@ use Getopt::Std;
 my $PROGRAM = basename $0;
 my $USAGE=
 "Usage: $PROGRAM
--d: debug
 ";
 
 my %OPT;
-getopts('d', \%OPT);
+getopts('', \%OPT);
 
 my %PRECLUST = ();
 dbmopen(%PRECLUST, "preclust.dbm", 0644) || die; # use DBM
@@ -19,11 +18,7 @@ while (<>) {
     chomp;
     if (/^$/) {
         if (@arr) {
-            if ($OPT{d}) {
-                print "@arr\n";
-            } else {
-                $PRECLUST{$arr[0]} = "@arr";
-            }
+            $PRECLUST{$arr[0]} = "@arr";
         } else {
             die;
         }
@@ -57,11 +52,7 @@ while (<>) {
     }
 }
 if (@arr) {
-    if ($OPT{d}) {
-        print "@arr\n";
-    } else {
-        $PRECLUST{$arr[0]} = "@arr";
-    }
+    $PRECLUST{$arr[0]} = "@arr";
 }
 
 dbmclose(%PRECLUST);
