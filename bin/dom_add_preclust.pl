@@ -57,6 +57,9 @@ close(PRECLUST_FILE);
 while (<STDIN>) {
     chomp;
     my @f = split;
+    if (@f != 5) {
+        die;
+    }
     my $gene = $f[1];
     my @arr = ();
     if ($PRECLUST{$gene}) {
