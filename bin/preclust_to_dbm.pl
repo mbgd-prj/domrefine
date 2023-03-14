@@ -30,16 +30,10 @@ while (<>) {
         if ($f[0] =~ /^ +(\w+:\w+)$/) {
             my $gene = $1;
             push(@arr, $gene);
-            # $PRECLUST{$rep}{$gene} = 1;
         }
     } elsif (@f == 1) {
         if (/^\* (\w+:\w+)$/) {
             my $rep = $1;
-            # print "$rep\n";
-            $rep = $1;
-            # if ($PRECLUST{$rep}) {
-            #     die;
-            # }
             if (@arr) {
                 die;
             }
