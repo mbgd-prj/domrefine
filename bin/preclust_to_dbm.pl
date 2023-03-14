@@ -1,0 +1,67 @@
+#!/usr/bin/perl -w
+use strict;
+use File::Basename;
+use Getopt::Std;
+my $PROGRAM = basename $0;
+my $USAGE=
+"Usage: $PROGRAM
+-d: debug
+";
+
+my %OPT;
+getopts('d', \%OPT);
+
+my %PRECLUST = ();
+dbmopen(%PRECLUST, "preclust.dbm", 0644) || die; # use DBM
+
+my @arr = ();
+while (<>) {
+    chomp;
+    if (/^$/) {
+        if (@arr) {
+            if ($OPT{d}) {
+                print "@arr\n";
+            } else {
+                $PRECLUST{$arr[0]} = "@arr";
+            }
+        } else {
+            die;
+        }
+        @arr = ();
+        next;
+    }
+    my @f = split(/\t/, $_);
+    if (@f == 6) {
+        if ($f[0] =~ /^ +(\w+:\w+)$/) {
+            my $gene = $1;
+            push(@arr, $gene);
+            # $PRECLUST{$rep}{$gene} = 1;
+        }
+    } elsif (@f == 1) {
+        if (/^\* (\w+:\w+)$/) {
+            my $rep = $1;
+            # print "$rep\n";
+            $rep = $1;
+            # if ($PRECLUST{$rep}) {
+            #     die;
+            # }
+            if (@arr) {
+                die;
+            }
+            push @arr, $rep;
+        } else {
+            die;
+        }
+    } else {
+        die $_;
+    }
+}
+if (@arr) {
+    if ($OPT{d}) {
+        print "@arr\n";
+    } else {
+        $PRECLUST{$arr[0]} = "@arr";
+    }
+}
+
+dbmclose(%PRECLUST);
