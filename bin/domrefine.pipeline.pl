@@ -61,6 +61,14 @@ if (-s "cluster" and (! -s "cluster.checked" || ! -f "cluster.checked.log")) {
     system "cat cluster | dom_check -lt > cluster.checked 2> cluster.checked.log";
     system "diff_domtbl cluster cluster.checked > cluster.checked.diff";
 }
+if ($ENV{DOMREFINE_PRECLUST_INFO}) {
+    my $start_time = time;
+    if (! -s "preclust.dbm.pag") {
+        system "preclust_to_dbm.pl $ENV{DOMREFINE_PRECLUST_INFO}";
+    }
+    my $end_time = time;
+    printf STDERR "\ndbm preclut:\t%.2f\tmin\n", ($end_time - $start_time)/60;
+}
 
 ### Main ###
 if (! -s "cluster.merge") {
