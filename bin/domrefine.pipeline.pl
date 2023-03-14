@@ -61,14 +61,6 @@ if (-s "cluster" and (! -s "cluster.checked" || ! -f "cluster.checked.log")) {
     system "cat cluster | dom_check -lt > cluster.checked 2> cluster.checked.log";
     system "diff_domtbl cluster cluster.checked > cluster.checked.diff";
 }
-if ($ENV{DOMREFINE_PRECLUST_INFO}) {
-    my $start_time = time;
-    if (! -s "preclust.dbm.pag") {
-        system "preclust_to_dbm.pl $ENV{DOMREFINE_PRECLUST_INFO}";
-    }
-    my $end_time = time;
-    printf STDERR "\ndbm preclut:\t%.2f\tmin\n", ($end_time - $start_time)/60;
-}
 
 ### Main ###
 if (! -s "cluster.merge") {
@@ -96,7 +88,11 @@ if (-s "cluster.merge.merge_divide" and ! -s "cluster.merge.merge_divide.move.cr
 }
 if (-s "cluster.merge.merge_divide.move.create" and ! -s "cluster.merge.merge_divide.move.create.paste.divide") {
     my $start_time = time;
-    system "cat cluster.merge.merge_divide.move.create | dom_renumber -d | dom_paste > cluster.merge.merge_divide.move.create.paste 2>  cluster.merge.merge_divide.move.create.paste.log";
+    if ($ENV{DOMREFINE_PRECLUST_INFO}) {
+        system "cat cluster.merge.merge_divide.move.create | dom_renumber -d | dom_paste 2> cluster.merge.merge_divide.move.create.paste.log | dom_add_preclust.pl $ENV{DOMREFINE_PRECLUST_INFO} > cluster.merge.merge_divide.move.create.paste";
+    } else {
+        system "cat cluster.merge.merge_divide.move.create | dom_renumber -d | dom_paste > cluster.merge.merge_divide.move.create.paste 2>  cluster.merge.merge_divide.move.create.paste.log";
+    }
     system "domrefine.divide.pl -1 cluster.merge.merge_divide.move.create.paste";
     my $end_time = time;
     printf STDERR "divide:\t%.2f\tmin\n", ($end_time - $start_time)/60;
