@@ -68,7 +68,6 @@ sub get_dclst_structure {
             print STDERR "read blank line $.\n";
             next;
         }
-        # my ($cluster, $gene, @domain_info) = split /\s+/, $line;
         my ($cluster, $gene, @domain_info) = decompose_dclst_line($line);
         unless (@domain_info and @domain_info % 3 == 0) {
             die $line;
@@ -90,7 +89,12 @@ sub decompose_dclst_line {
     chomp($dclst_line);
     if ($dclst_line =~ /^(\S+)\s(\S+)\s(\S+)\s(\d+)\s(\d+)/) {
         my @f = split(/\s+/, $dclst_line);
-        return @f;
+        if ($ENV{DOMREFINE_PRECLUST_INFO}) {
+            my ($cluster, $gene, $domain, $start, $end) = @f;
+            return ($cluster, $gene, $domain, $start, $end);
+        } else {
+            return @f;
+        }
     } elsif ($dclst_line =~ /^(\S+)\s(\S+)\s(\d+)\s(\d+)$/) { # eggNOG member format
         my ($cluster, $gene, $start, $end) = ($1, $2, $3, $4);
         my $domain = 0;

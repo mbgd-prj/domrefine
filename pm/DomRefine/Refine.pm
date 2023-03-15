@@ -57,7 +57,6 @@ sub renumber_domain {
     open(DCLST, $dclst_table_file) || die;
     while (my $line = <DCLST>) {
         chomp($line);
-        # my ($cluster, $gene, @domain_info) = split /\s+/, $line;
         my ($cluster, $gene, @domain_info) = decompose_dclst_line($line);
         unless (@domain_info and @domain_info % 3 == 0) {
             die;
