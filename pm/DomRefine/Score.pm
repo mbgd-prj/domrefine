@@ -132,7 +132,7 @@ sub dsp_score {
     my ($tmp_dclst, $tmp_alignment, %opt) = @_;
 
     # my $program = "dsp_score.c";
-    my $program = "dsp_score";
+    my $program = "dsp_score-1.1.0";
 
     my $option = "";
     if (defined $opt{lines}) {
