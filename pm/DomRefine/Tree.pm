@@ -360,14 +360,14 @@ sub tree_children {
 }
 
 sub sum_of_duplication {
-    my ($r_tree) = @_;
+    my ($r_gene_species, $r_tree) = @_;
 
     my @node = grep {! $_->is_Leaf} ${$r_tree}->get_nodes();
 
     my $sum_of_duplication = 0;
     my $sum_of_sp_disappeared = 0;
     for my $node (@node) {
-	my ($is_diuplication, $sp_disappeared) = check_duplication($node);
+	my ($is_diuplication, $sp_disappeared) = check_duplication($r_gene_species, $node);
 	if ($is_diuplication) {
 	    $sum_of_duplication += $is_diuplication;
 	    $sum_of_sp_disappeared += $sp_disappeared;
@@ -414,7 +414,7 @@ sub put_support_values {
 }
 
 sub check_species_overlap {
-    my ($tree_file, $i, $node1, $node2) = @_;
+    my ($r_gene_species, $tree_file, $i, $node1, $node2) = @_;
 
     my $tree = new_tree($tree_file);
     my @nodes = $tree->get_root_node->get_all_Descendents;
@@ -432,8 +432,8 @@ sub check_species_overlap {
 #     print STDERR "leaves1 @leaves1\n";
 #     print STDERR "leaves2 @leaves2\n";
 
-    my @species1 = get_species_from_leaves(@leaves1);
-    my @species2 = get_species_from_leaves(@leaves2);
+    my @species1 = get_species_from_leaves($r_gene_species, @leaves1);
+    my @species2 = get_species_from_leaves($r_gene_species, @leaves2);
 #     print STDERR "species1 @species1\n";
 #     print STDERR "species2 @species2\n";
     my @all_species = uniq(@species1, @species2);
@@ -441,7 +441,7 @@ sub check_species_overlap {
 
     my $sum_of_duplication = 0;
     my $sum_of_sp_disappeared = 0;
-    ($sum_of_duplication, $sum_of_sp_disappeared) = sum_of_duplication(\$tree);
+    ($sum_of_duplication, $sum_of_sp_disappeared) = sum_of_duplication($r_gene_species, \$tree);
 
     # print
     $node1 ||= "";
@@ -509,22 +509,36 @@ sub check_species_overlap {
 }
 
 sub get_species_from_leaves {
-    my @leaves = @_;
+    my ($r_gene_species, @leaves) = @_;
     
     my %species;
     for my $leaf (@leaves) {
-	if ($leaf =~ /^\d+_([A-Za-z0-9]+)_/) {
-	    my $sp = $1;
+	if ($leaf =~ /^\d+_([A-Za-z0-9]+)_(\S+)$/) {
+	    my ($sp, $gene) = ($1, $2);
 	    $species{$sp} = 1;
-	} elsif ($leaf =~ /^([A-Za-z0-9]+)_/) {
-	    my $sp = $1;
+            expand_species_for_gene("$sp:$gene", $r_gene_species, \%species);
+	} elsif ($leaf =~ /^([A-Za-z0-9]+)_(\S+)$/) {
+	    my ($sp, $gene) = ($1, $2);
 	    $species{$sp} = 1;
+            expand_species_for_gene("$sp:$gene", $r_gene_species, \%species);
 	} else {
 	    die $leaf;
 	}
     }
 
     return keys %species;
+}
+
+sub expand_species_for_gene {
+    my ($gene, $r_gene_species, $r_species) = @_;
+    if (${$r_gene_species}{$gene}) {
+        my @expanded_species = keys %{${$r_gene_species}{$gene}};
+        for my $e (@expanded_species) {
+            ${$r_species}{$e} = 1;
+        }
+    } else {
+        die "cannot get expanded species for gene $gene";
+    }
 }
 
 sub get_sub_tree_leaves {
@@ -868,14 +882,14 @@ sub tree_padding {
 }
 
 sub check_duplication {
-    my ($node) = @_;
+    my ($r_gene_species, $node) = @_;
 
     my ($sub_tree1_node, $sub_tree2_node) = $node->each_Descendent;
     
     my @leaves1 = get_sub_tree_leaves($sub_tree1_node);
     my @leaves2 = get_sub_tree_leaves($sub_tree2_node);
-    my @species1 = get_species_from_leaves(@leaves1);
-    my @species2 = get_species_from_leaves(@leaves2);
+    my @species1 = get_species_from_leaves($r_gene_species, @leaves1);
+    my @species2 = get_species_from_leaves($r_gene_species, @leaves2);
     my @all_species = uniq(@species1, @species2);
     my @common_species = check_redundancy(@species1, @species2);
 
