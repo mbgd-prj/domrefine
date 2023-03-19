@@ -35,7 +35,7 @@ while (<>) {
 	my $homcluster_score = $2;
 	print HOMCLUSTER_SCORE "$HOMCLUSTER\t$homcluster_score\n";
     } elsif (/^HomCluster/) {
-	die;
+        print HOMCLUSTER_SCORE "$HOMCLUSTER\n";
     }
     if (/^Cluster (\d+)/) {
 	$CLUSTER = $1;
