@@ -16,6 +16,7 @@
 # -C : skip create boundary
 # -R : align by region (default: off) 
 # -B : use blastdbcmd
+# -S : allow spacing in a same domain
 
 # -H homology_dir
 # -I homology_info
@@ -73,8 +74,9 @@ if [ -e "$DOMREFINE_DIR/bin" ] &&  [ -e "$DOMREFINE_DIR/bin_dev" ] &&  [ -e "$DO
     export DOMREFINE_TREE=FastTree # overwritten by -f ; the program is executed in pm/DomRefine/Tree.pm
     export DOMREFINE_ENDPOINT=mbgd
     export DOMREFINE_BLASTDBCMD=0
+    export DOMREFINE_ALLOW_SPACING=0
     
-    while getopts "q:n:u:c:p:P:atONsrMFCRH:I:Q:f:A:B" opt; do
+    while getopts "q:n:u:c:p:P:atONsrMFCRH:I:Q:f:A:BS" opt; do
 	case $opt in
 	    q ) DOMREFINE_QUEUE=$OPTARG;;
 	    n ) DOMREFINE_QUEUE_SIZE=$OPTARG;;
@@ -98,6 +100,7 @@ if [ -e "$DOMREFINE_DIR/bin" ] &&  [ -e "$DOMREFINE_DIR/bin_dev" ] &&  [ -e "$DO
 	    f ) DOMREFINE_TREE=$OPTARG;;
 	    A ) DOMREFINE_SAVE_ARCHIVE=$OPTARG;;
 	    B ) DOMREFINE_BLASTDBCMD=1;;
+            S ) DOMREFINE_ALLOW_SPACING=1;;
 	esac
     done
     shift $(($OPTIND - 1))

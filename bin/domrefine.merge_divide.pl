@@ -54,7 +54,11 @@ system "$GET_CLUSTER | sge_script_score.pl -r -i $CLUSTER -o $CLUSTER.merge_divi
     system "$GET_CLUSTER | summarize_score.pl -i $CLUSTER.merge_divide_test/score.before. -o $CLUSTER.merge_divide_test/score.after. > $CLUSTER.merge_divide_test.summary";
     system "cat $CLUSTER.merge_divide_test.summary | sort -k4,4gr | select_positive.pl -f 4 > $CLUSTER.merge_divide_test.to_divide";
     system "cat $CLUSTER.merge_divide_test.to_divide | clusterset_modify -i $CLUSTER -o $CLUSTER.merge_divide_test > $CLUSTER.merge_divide.out 2> $CLUSTER.merge_divide.log";
-    system "cat $CLUSTER.merge_divide.out | dom_renumber > $CLUSTER.merge_divide";
+    if ($ENV{DOMREFINE_ALLOW_SPACING}) {
+        system "cat $CLUSTER.merge_divide.out | dom_renumber > $CLUSTER.merge_divide";
+    } else {
+        system "cat $CLUSTER.merge_divide.out | dom_concat_domains > $CLUSTER.merge_divide";
+    }
     my $end_time = time;
     printf STDERR "post:\t%.2f\tmin\n", ($end_time - $start_time)/60;
 }
