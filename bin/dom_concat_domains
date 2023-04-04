@@ -36,7 +36,7 @@ for my $cluster (keys %MEMBER) {
                 }
                 $MEMBER{$cluster}{$gene}{$prev_domain}{end} = $MEMBER{$cluster}{$gene}{$domain}{end};
                 delete $MEMBER{$cluster}{$gene}{$domain};
-                print STDERR "$cluster $gene $domain\n";
+                # print STDERR "$cluster $gene $domain\n";
             }
         }
     }
