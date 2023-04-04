@@ -4,6 +4,9 @@ Identification of ortholog groups is a crucial step in comparative analysis of m
 
 We developed a method to improve domain-based ortholog classification using multiple alignment information. This method is based on a scoring scheme, the domain-specific sum-of-pairs (DSP) score , which evaluates ortholog clustering results at the domain level as the sum total of domain-based alignment scores. We developed a refinement pipeline to improve domain-based clustering, DomRefine , by optimizing the DSP score.
 
+## Original version
+https://mbgd.nibb.ac.jp/domrefine/
+
 ## Reference
 Chiba, H. and Uchiyama, I.
 Improvement of domain-level ortholog clustering by optimizing domain-specific sum-of-pairs score.
