@@ -7,7 +7,7 @@ We developed a method to improve domain-based ortholog classification using mult
 ## Original version
 https://mbgd.nibb.ac.jp/domrefine/
 
-## Reference
+### Reference
 Chiba, H. and Uchiyama, I.
 Improvement of domain-level ortholog clustering by optimizing domain-specific sum-of-pairs score.
 [*BMC Bioinformatics*, 15:148 (2014)](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-15-148).
