@@ -36,6 +36,12 @@ my ($INPUT_FILE) = @ARGV;
 my $START_TIME = time;
 
 ### Preparation ###
+if ($ENV{DOMREFINE_BLASTDBCMD}){
+    if (!-e "$ENV{DOMREFINE_SEQ_DB}.phd"){
+        system "/bio/bin/makeblastdb -dbtype prot -hash_index -parse_seqids -in $ENV{DOMREFINE_SEQ_DB}";
+    }
+}
+
 system "domrefine.prepare_cache.pl $ENV{DOMREFINE_CACHE}";
 if (! $ENV{DOMREFINE_FAST_MERGE}) {
     system "domrefine.prepare_cache.pl $ENV{DOMREFINE_CACHE_STEPWISE_MERGE}";

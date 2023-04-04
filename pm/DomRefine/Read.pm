@@ -593,10 +593,6 @@ sub read_seq {
     if (-f $ENV{DOMREFINE_SEQ_DB}) {
         print STDERR " read $ENV{DOMREFINE_SEQ_DB} ..\n";
         if ($ENV{DOMREFINE_BLASTDBCMD} && $gene_cnt < 5000){
-            if (!-e "$ENV{DOMREFINE_SEQ_DB}.phd"){
-                my $cmd="/bio/bin/makeblastdb -dbtype prot -hash_index -parse_seqids -in $ENV{DOMREFINE_SEQ_DB}";
-                system($cmd);
-            }
             for my $gene (@{$r_gene}) {
                 my ($sp, $name) = decompose_gene_id($gene);
                 #my $cmd="/bio/bin/blastdbcmd -outfmt '%s' -entry $gene -db $ENV{DOMREFINE_SEQ_DB}";
