@@ -31,12 +31,14 @@ while (<PRECLUST_FILE>) {
     }
     my @f = split(/\t/, $_);
     if (@f == 6) {
-        if ($f[0] =~ /^ +(\w+):(\w+)$/) {
+        if ($f[0] =~ /^ +(\w+):(\S+)$/) {
             my ($org, $gene_id) = ($1, $2);
             $PRECLUST{$REP}{$org} = 1;
+        } else {
+            die;
         }
     } elsif (@f == 1) {
-        if (/^\* (\w+:\w+)$/) {
+        if (/^\* (\w+:\S+)$/) {
             $REP = $1;
             if ($PRECLUST{$REP}) {
                 die;
