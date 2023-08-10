@@ -574,46 +574,46 @@ sub find_hom_mysql {
 
     my @condition1 = ();
     for my $chksum (@chksum) {
-	push @condition1, "name1='$chksum'";
+        push @condition1, "name1='$chksum'";
     }
     my $condition1 = join(" or ", @condition1);
 
     my @condition2 = ();
     for my $chksum (@chksum) {
-	push @condition2, "name2='$chksum'";
+        push @condition2, "name2='$chksum'";
     }
     my $condition2 = join(" or ", @condition2);
 
     my $r_r_homol = $opt{dbh_accum}->selectall_arrayref("SELECT from1, to1, from2, to2, eval, score, name1, name2 FROM homology WHERE ($condition1) or ($condition2)");
     for (my $i=0; $i<@{$r_r_homol}; $i++) {
-	if (@{${$r_r_homol}[$i]} == 8) {
-	    my ($start1, $end1, $start2, $end2, $e_value, $score, $name1, $name2) = @{${$r_r_homol}[$i]};
-	    # print join("\t", ($start1, $end1, $start2, $end2, $e_value, $score, $name1, $name2)), "\n";
-	    my $gene1 = get_genes_from_checksum($opt{dbh}, $name1);
-	    my $gene2 = get_genes_from_checksum($opt{dbh}, $name2);
-	    # my $gene1_len = get_gene_length(\%seq, $gene1);
-	    # my $gene2_len = get_gene_length(\%seq, $gene2);
-	    # print join("\t", $gene1, "$start1-$end1/$gene1_len", $gene2, "$start2-$end2/$gene2_len", $e_value, $score), "\n";
+        if (@{${$r_r_homol}[$i]} == 8) {
+            my ($start1, $end1, $start2, $end2, $e_value, $score, $name1, $name2) = @{${$r_r_homol}[$i]};
+            # print join("\t", ($start1, $end1, $start2, $end2, $e_value, $score, $name1, $name2)), "\n";
+            my $gene1 = get_genes_from_checksum($opt{dbh}, $name1);
+            my $gene2 = get_genes_from_checksum($opt{dbh}, $name2);
+            # my $gene1_len = get_gene_length(\%seq, $gene1);
+            # my $gene2_len = get_gene_length(\%seq, $gene2);
+            # print join("\t", $gene1, "$start1-$end1/$gene1_len", $gene2, "$start2-$end2/$gene2_len", $e_value, $score), "\n";
 
-	    # my @gene1 = @{$chksum2gene{$name1}};
-	    # my @gene2 = @{$chksum2gene{$name2}};
-	    # if (@gene1 != 1) {
-	    # 	print STDERR "WARNING: $name1 corresponds to @gene1\n";
-	    # }
-	    # if (@gene2 != 1) {
-	    # 	print STDERR "WARNING: $name2 corresponds to @gene2\n";
-	    # }
-	    # for my $gene1 (@gene1) {
-	    # 	for my $gene2 (@gene2) {
-	    # 	    if (! $opt{all} and $gene1 eq $gene2) {
-	    # 		next;
-	    # 	    }
-	    # 	    my $gene1_len = get_gene_length(\%seq, $gene1);
-	    # 	    my $gene2_len = get_gene_length(\%seq, $gene2);
-	    # 	    print join("\t", $gene1, "$start1-$end1/$gene1_len", $gene2, "$start2-$end2/$gene2_len", $e_value, $score), "\n";
-	    # 	}
-	    # }
-	}
+            # my @gene1 = @{$chksum2gene{$name1}};
+            # my @gene2 = @{$chksum2gene{$name2}};
+            # if (@gene1 != 1) {
+            #   print STDERR "WARNING: $name1 corresponds to @gene1\n";
+            # }
+            # if (@gene2 != 1) {
+            #   print STDERR "WARNING: $name2 corresponds to @gene2\n";
+            # }
+            # for my $gene1 (@gene1) {
+            #   for my $gene2 (@gene2) {
+            #       if (! $opt{all} and $gene1 eq $gene2) {
+            #           next;
+            #       }
+            #       my $gene1_len = get_gene_length(\%seq, $gene1);
+            #       my $gene2_len = get_gene_length(\%seq, $gene2);
+            #       print join("\t", $gene1, "$start1-$end1/$gene1_len", $gene2, "$start2-$end2/$gene2_len", $e_value, $score), "\n";
+            #   }
+            # }
+        }
     }
 }
 
@@ -629,39 +629,39 @@ sub check_hom_mysql {
 
     my @condition1 = ();
     for my $chksum (@chksum) {
-	push @condition1, "name1='$chksum'";
+        push @condition1, "name1='$chksum'";
     }
     my $condition1 = join(" or ", @condition1);
 
     my @condition2 = ();
     for my $chksum (@chksum) {
-	push @condition2, "name2='$chksum'";
+        push @condition2, "name2='$chksum'";
     }
     my $condition2 = join(" or ", @condition2);
 
     my $r_r_homol = $opt{dbh_accum}->selectall_arrayref("SELECT from1, to1, from2, to2, eval, score, name1, name2 FROM homology WHERE ($condition1) and ($condition2)");
     for (my $i=0; $i<@{$r_r_homol}; $i++) {
-	if (@{${$r_r_homol}[$i]} == 8) {
-	    my ($start1, $end1, $start2, $end2, $e_value, $score, $name1, $name2) = @{${$r_r_homol}[$i]};
-	    my @gene1 = @{$chksum2gene{$name1}};
-	    my @gene2 = @{$chksum2gene{$name2}};
-	    if (@gene1 != 1) {
-		print STDERR "WARNING: $name1 corresponds to @gene1\n";
-	    }
-	    if (@gene2 != 1) {
-		print STDERR "WARNING: $name2 corresponds to @gene2\n";
-	    }
-	    for my $gene1 (@gene1) {
-		for my $gene2 (@gene2) {
-		    if (! $opt{all} and $gene1 eq $gene2) {
-			next;
-		    }
-		    my $gene1_len = get_gene_length(\%seq, $gene1);
-		    my $gene2_len = get_gene_length(\%seq, $gene2);
-		    print join("\t", $gene1, "$start1-$end1/$gene1_len", $gene2, "$start2-$end2/$gene2_len", $e_value, $score), "\n";
-		}
-	    }
-	}
+        if (@{${$r_r_homol}[$i]} == 8) {
+            my ($start1, $end1, $start2, $end2, $e_value, $score, $name1, $name2) = @{${$r_r_homol}[$i]};
+            my @gene1 = @{$chksum2gene{$name1}};
+            my @gene2 = @{$chksum2gene{$name2}};
+            if (@gene1 != 1) {
+                print STDERR "WARNING: $name1 corresponds to @gene1\n";
+            }
+            if (@gene2 != 1) {
+                print STDERR "WARNING: $name2 corresponds to @gene2\n";
+            }
+            for my $gene1 (@gene1) {
+                for my $gene2 (@gene2) {
+                    if (! $opt{all} and $gene1 eq $gene2) {
+                        next;
+                    }
+                    my $gene1_len = get_gene_length(\%seq, $gene1);
+                    my $gene2_len = get_gene_length(\%seq, $gene2);
+                    print join("\t", $gene1, "$start1-$end1/$gene1_len", $gene2, "$start2-$end2/$gene2_len", $e_value, $score), "\n";
+                }
+            }
+        }
     }
 }
 
@@ -678,55 +678,55 @@ sub check_merge_by_hom_mysql {
     my @chksum = keys %chksum2gene;
     my @condition1 = ();
     for my $chksum (@chksum) {
-	push @condition1, "name1='$chksum'";
+        push @condition1, "name1='$chksum'";
     }
     my @condition2 = ();
     for my $chksum (@chksum) {
-	push @condition2, "name2='$chksum'";
+        push @condition2, "name2='$chksum'";
     }
 
     my %homology = ();
     # my $r_r_homol = $opt{dbh_accum}->selectall_arrayref("SELECT from1, to1, from2, to2, eval, score, name1, name2 FROM homology WHERE name1 IN(" . join(",", @chksum) . ") and name2 IN(" . join(",", @chksum) . ")");
     my $r_r_homol = $opt{dbh_accum}->selectall_arrayref("SELECT from1, to1, from2, to2, eval, score, name1, name2 FROM homology WHERE (" . join(" or ", @condition1) . ") and (" . join(" or ", @condition2) . ")");
     for (my $i=0; $i<@{$r_r_homol}; $i++) {
-	if (@{${$r_r_homol}[$i]} == 8) {
-	    my ($start1, $end1, $start2, $end2, $e_value, $score, $name1, $name2) = @{${$r_r_homol}[$i]};
-	    for my $gene1 (@{$chksum2gene{$name1}}) {
-		for my $gene2 (@{$chksum2gene{$name2}}) {
-		    # print STDERR join(" ", $name1, $name2, $gene1, $gene2, $start1, $end1, $start2, $end2, $e_value, $score), "\n";
-		    if ($e_value < 0.001 and $score >= 60) {
-			if (defined $opt{r}) {
-			    my $overlap_gene1 = check_overlap_with_clusters($start1, $end1, $r_member, $cluster1, $cluster2, $gene1, %opt);
-			    my $overlap_gene2 = check_overlap_with_clusters($start2, $end2 ,$r_member, $cluster1, $cluster2, $gene2, %opt);
-			    if ($overlap_gene1 && $overlap_gene2) {
-				$homology{$gene1}{$gene2} = 1;
-				$homology{$gene2}{$gene1} = 1;
-			    }
-			} else {
-			    $homology{$gene1}{$gene2} = 1;
-			    $homology{$gene2}{$gene1} = 1;
-			}
-		    }
-		}
-	    }
-	}
+        if (@{${$r_r_homol}[$i]} == 8) {
+            my ($start1, $end1, $start2, $end2, $e_value, $score, $name1, $name2) = @{${$r_r_homol}[$i]};
+            for my $gene1 (@{$chksum2gene{$name1}}) {
+                for my $gene2 (@{$chksum2gene{$name2}}) {
+                    # print STDERR join(" ", $name1, $name2, $gene1, $gene2, $start1, $end1, $start2, $end2, $e_value, $score), "\n";
+                    if ($e_value < 0.001 and $score >= 60) {
+                        if (defined $opt{r}) {
+                            my $overlap_gene1 = check_overlap_with_clusters($start1, $end1, $r_member, $cluster1, $cluster2, $gene1, %opt);
+                            my $overlap_gene2 = check_overlap_with_clusters($start2, $end2 ,$r_member, $cluster1, $cluster2, $gene2, %opt);
+                            if ($overlap_gene1 && $overlap_gene2) {
+                                $homology{$gene1}{$gene2} = 1;
+                                $homology{$gene2}{$gene1} = 1;
+                            }
+                        } else {
+                            $homology{$gene1}{$gene2} = 1;
+                            $homology{$gene2}{$gene1} = 1;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     my $count_all = 0;
     my $count_homology = 0;
     for my $gene1 (@gene1) {
-	for my $gene2 (@gene2) {
-	    if (${$r_member}{$cluster1}{$gene1} && ${$r_member}{$cluster1}{$gene2} and 
-		${$r_member}{$cluster2}{$gene1} && ${$r_member}{$cluster2}{$gene2}) {
-	    } elsif ($gene1 eq $gene2) {
-	    } else {
-		$count_all ++;
-		# if (overlap_domain_hom_mysql($gene1, $gene2, $r_member, $cluster1, $cluster2, %opt)) {
-		if ($homology{$gene1}{$gene2}) {
-		    $count_homology ++;
-		}
-	    }
-	}
+        for my $gene2 (@gene2) {
+            if (${$r_member}{$cluster1}{$gene1} && ${$r_member}{$cluster1}{$gene2} and 
+                ${$r_member}{$cluster2}{$gene1} && ${$r_member}{$cluster2}{$gene2}) {
+            } elsif ($gene1 eq $gene2) {
+            } else {
+                $count_all ++;
+                # if (overlap_domain_hom_mysql($gene1, $gene2, $r_member, $cluster1, $cluster2, %opt)) {
+                if ($homology{$gene1}{$gene2}) {
+                    $count_homology ++;
+                }
+            }
+        }
     }
 
     print STDERR "$cluster1-$cluster2\t$count_homology/$count_all";
@@ -734,14 +734,14 @@ sub check_merge_by_hom_mysql {
     print STDERR "\t", scalar(@gene1), "\t", scalar(@gene2), "\n";
 
     if ($count_all) {
-	if ($count_homology/$count_all >= $opt{R}) {
-	    return 1;
-	} else {
-	    return 0;
-	}
+        if ($count_homology/$count_all >= $opt{R}) {
+            return 1;
+        } else {
+            return 0;
+        }
     } else {
-	print STDERR "WARNING: no links were evaluated\n";
-	return 1;
+        print STDERR "WARNING: no links were evaluated\n";
+        return 1;
     }
 }
 
@@ -754,15 +754,15 @@ sub overlap_domain_hom {
 
     # if (defined ${$r_hom}{$gene1}{$gene2}) {
     if (defined ${$r_hom}{"$gene1 $gene2"}) {
-	if (defined $opt{r}) {
-	    # my ($start1, $end1) = (${$r_hom}{$gene1}{$gene2}{start1}, ${$r_hom}{$gene1}{$gene2}{end1});
-	    # my ($start2, $end2) = (${$r_hom}{$gene1}{$gene2}{start2}, ${$r_hom}{$gene1}{$gene2}{end2});
-        # my $start_end = ${$r_hom}{$gene1}{$gene2};
-        my $start_end = ${$r_hom}{"$gene1 $gene2"};
-        my ($start1, $end1, $start2, $end2);
-        if ($start_end =~ /^s1:(\S+) e1:(\S+) s2:(\S+) e2:(\S+)$/) {
-            ($start1, $end1, $start2, $end2) = ($1, $2, $3, $4);
-        }
+        if (defined $opt{r}) {
+            # my ($start1, $end1) = (${$r_hom}{$gene1}{$gene2}{start1}, ${$r_hom}{$gene1}{$gene2}{end1});
+            # my ($start2, $end2) = (${$r_hom}{$gene1}{$gene2}{start2}, ${$r_hom}{$gene1}{$gene2}{end2});
+            # my $start_end = ${$r_hom}{$gene1}{$gene2};
+            my $start_end = ${$r_hom}{"$gene1 $gene2"};
+            my ($start1, $end1, $start2, $end2);
+            if ($start_end =~ /^s1:(\S+) e1:(\S+) s2:(\S+) e2:(\S+)$/) {
+                ($start1, $end1, $start2, $end2) = ($1, $2, $3, $4);
+            }
 	    my $overlap_gene1 = check_overlap_with_clusters($start1, $end1, $r_member, $cluster1, $cluster2, $gene1, %opt);
 	    my $overlap_gene2 = check_overlap_with_clusters($start2, $end2, $r_member, $cluster1, $cluster2, $gene2, %opt);
 	    # print STDERR "$gene1\t$gene2\t$start1\t$end1\t$start2\t$end2\n";
