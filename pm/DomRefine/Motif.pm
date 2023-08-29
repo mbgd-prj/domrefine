@@ -564,37 +564,33 @@ sub check_merge_by_hom {
 sub check_merge_by_homcluster {
     my ($r_member, $cluster1, $cluster2, $r_hom, %opt) = @_;
 
-    my @gene1 = keys %{${$r_member}{$cluster1}};
-    my @gene2 = keys %{${$r_member}{$cluster2}};
-
-    my $count_all = 0;
-    my $count_homology = 0;
-
+    # Get overlapped homclusters, and counts of overlapped genes
     my %count_homcluster1;
     my %count_homcluster2;
     my $homcluster1 = count_overlap_with_homcluster($r_member, $cluster1, $r_hom, \%count_homcluster1);
     my $homcluster2 = count_overlap_with_homcluster($r_member, $cluster2, $r_hom, \%count_homcluster2);
 
-    my $count1 = 0;
-    my $count2 = 0;
-    my $ratio1 = 0;
-    my $ratio2 = 0;
-    if ($homcluster1) {
-        $count1 = $count_homcluster1{$homcluster1};
-        $ratio1 = $count1 / scalar(@gene1);
+    # Output ratio into stderr as logs
+    my $n_gene1 = keys %{${$r_member}{$cluster1}};
+    my $n_gene2 = keys %{${$r_member}{$cluster2}};
+    for my $key (keys %count_homcluster1) {
+        if ($count_homcluster2{$key}) {
+            my $count1 = keys %{$count_homcluster1{$key}};
+            my $count2 = keys %{$count_homcluster2{$key}};
+            my $ratio1 = $count1 / $n_gene1;
+            my $ratio2 = $count2 / $n_gene2;
+            print STDERR "homcluster $key";
+            print STDERR "\t";
+            print STDERR "$count1/$n_gene1 = ";
+            print STDERR $ratio1;
+            print STDERR "\t";
+            print STDERR "$count2/$n_gene2 = ";
+            print STDERR $ratio2;
+            print STDERR "\t";
+            print STDERR $ratio1 * $ratio2;
+            print STDERR "\n";
+        }
     }
-    if ($homcluster2) {
-        $count2 = $count_homcluster2{$homcluster2};
-        $ratio2 = $count2 / scalar(@gene2);
-    }
-    print STDERR "$count1/", scalar(@gene1);
-    print STDERR "\t";
-    print STDERR "$count2/", scalar(@gene2);
-    print STDERR "\t";
-    print STDERR $ratio1;
-    print STDERR "\t";
-    print STDERR $ratio2;
-    print STDERR "\n";
 
     if ($homcluster1 && $homcluster1 == $homcluster2) {
         return 1;
@@ -834,7 +830,7 @@ sub count_overlap_with_homcluster {
                     my $hom_start = ${$r_hom}{$gene}{$hom_domain}{start};
                     my $hom_end = ${$r_hom}{$gene}{$hom_domain}{end};
                     if (overlap_len($hom_start, $hom_end, $start, $end)) {
-                        ${$r_count_homcluster}{$homcluster} ++;
+                        ${$r_count_homcluster}{$homcluster}{$gene} = 1;
                     }
                 }
             } else {
@@ -844,9 +840,11 @@ sub count_overlap_with_homcluster {
     }
 
     print STDERR "[$cluster]\n";
-    my @sorted = sort {${$r_count_homcluster}{$b}<=>${$r_count_homcluster}{$a}} keys %{$r_count_homcluster};
+    my @sorted = sort {scalar(keys(%{${$r_count_homcluster}{$b}}))<=>scalar(keys(%{${$r_count_homcluster}{$a}}))} keys %{$r_count_homcluster};
     for my $key (@sorted) {
-        print STDERR "count = ${$r_count_homcluster}{$key} for homcluster $key\n";
+        print STDERR "count = ";
+        print STDERR scalar(keys(%{${$r_count_homcluster}{$key}}));
+        print STDERR " for homcluster $key\n";
     }
 
     if (@sorted) {
