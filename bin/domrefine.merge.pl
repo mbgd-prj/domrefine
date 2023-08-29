@@ -144,6 +144,7 @@ sub merge {
     # execute
     if (! -s "${tmp_cluster}.link.to_merge") {
 	system "cat $outdir.summary | perl -lane '\$F[1]>=$THRESHOLD and \$F[7]>0 and print' | sort -k2,2gr | cut -f1 > ${tmp_cluster}.link.to_merge";
+        # For example, normalized_score_change >= -0.05 and score_between > 0, then merge.
     }
     if ($ENV{DOMREFINE_FAST_MERGE}) {
 	system "cat ${tmp_cluster}.link.to_merge | links_to_clustersets.pl -n | sort -k1,1nr > ${tmp_cluster}.clusterset.merged";
