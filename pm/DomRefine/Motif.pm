@@ -5,7 +5,7 @@ use Exporter;
 	     get_hit_positions get_hit_pos read_motif_list get_hit_positions_sparql
 	     read_cog_hits get_overlaps reverse_overlaps print_cluster_overlaps print_cluster_overlap_max count_overlap count_overlap_fast get_overlaps_check print_cluster_overlaps_1to1
              calc_overlap_aa print_overlap_with_homcluster
-             check_merge_by_hom check_merge_by_hom_mysql check_hom_mysql find_hom_mysql
+             check_merge_by_hom check_merge_by_homcluster check_merge_by_hom_mysql check_hom_mysql find_hom_mysql
 	     );
 
 use strict;
@@ -561,6 +561,44 @@ sub check_merge_by_hom {
     }
 }
 
+sub check_merge_by_homcluster {
+    my ($r_member, $cluster1, $cluster2, $r_hom, %opt) = @_;
+
+    my @gene1 = keys %{${$r_member}{$cluster1}};
+    my @gene2 = keys %{${$r_member}{$cluster2}};
+
+    my $count_all = 0;
+    my $count_homology = 0;
+
+    my %count_homcluster1;
+    my %count_homcluster2;
+    my $homcluster1 = count_overlap_with_homcluster($r_member, $cluster1, $r_hom, \%count_homcluster1);
+    my $homcluster2 = count_overlap_with_homcluster($r_member, $cluster2, $r_hom, \%count_homcluster2);
+
+    my $count1 = 0;
+    my $count2 = 0;
+    my $ratio1 = 0;
+    my $ratio2 = 0;
+    if ($homcluster1) {
+        $count1 = $count_homcluster1{$homcluster1};
+        $ratio1 = $count1 / scalar(@gene1);
+    }
+    if ($homcluster2) {
+        $count2 = $count_homcluster2{$homcluster2};
+        $ratio2 = $count2 / scalar(@gene2);
+    }
+    print STDERR $ratio1;
+    print STDERR "\t";
+    print STDERR $ratio2;
+    print STDERR "\t", scalar(@gene1), "\t", scalar(@gene2), "\n";
+
+    if ($homcluster1 && $homcluster1 == $homcluster2) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
 ### Incomplete
 sub find_hom_mysql {
     my ($r_gene, %opt) = @_;
@@ -774,6 +812,42 @@ sub overlap_domain_hom {
 	}
     }
     return 0;
+}
+
+sub count_overlap_with_homcluster {
+    my ($r_member, $cluster, $r_hom, $r_count_homcluster) = @_;
+
+    my @gene = keys %{${$r_member}{$cluster}};
+    for my $gene (@gene) {
+        my @domain = keys %{${$r_member}{$cluster}{$gene}};
+        for my $domain (@domain) {
+            my $start = ${$r_member}{$cluster}{$gene}{$domain}{start};
+            my $end = ${$r_member}{$cluster}{$gene}{$domain}{end};
+            if (${$r_hom}{$gene}) {
+                my @hom_domain = keys %{${$r_hom}{$gene}};
+                for my $hom_domain (@hom_domain) {
+                    my $homcluster = ${$r_hom}{$gene}{$hom_domain}{homcluster};
+                    my $hom_start = ${$r_hom}{$gene}{$hom_domain}{start};
+                    my $hom_end = ${$r_hom}{$gene}{$hom_domain}{end};
+                    if (overlap_len($hom_start, $hom_end, $start, $end)) {
+                        ${$r_count_homcluster}{$homcluster} ++;
+                    }
+                }
+            } else {
+                die;
+            }
+        }
+    }
+
+    print STDERR "[$cluster]\n";
+    my @sorted = sort {${$r_count_homcluster}{$b}<=>${$r_count_homcluster}{$a}} keys %{$r_count_homcluster};
+    for my $key (@sorted) {
+        print STDERR "count for homcluster $key = ${$r_count_homcluster}{$key}\n";
+    }
+
+    if (@sorted) {
+        return $sorted[0];
+    }
 }
 
 sub overlap_domain_hom_mysql {
