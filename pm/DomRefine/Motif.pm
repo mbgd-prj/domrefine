@@ -587,10 +587,14 @@ sub check_merge_by_homcluster {
         $count2 = $count_homcluster2{$homcluster2};
         $ratio2 = $count2 / scalar(@gene2);
     }
+    print STDERR "$count1/", scalar(@gene1);
+    print STDERR "\t";
+    print STDERR "$count2/", scalar(@gene2);
+    print STDERR "\t";
     print STDERR $ratio1;
     print STDERR "\t";
     print STDERR $ratio2;
-    print STDERR "\t", scalar(@gene1), "\t", scalar(@gene2), "\n";
+    print STDERR "\n";
 
     if ($homcluster1 && $homcluster1 == $homcluster2) {
         return 1;
