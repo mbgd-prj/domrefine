@@ -550,14 +550,14 @@ sub check_merge_by_hom {
     print STDERR "\t", scalar(@gene1), "\t", scalar(@gene2), "\n";
 
     if ($count_all) {
-        if ($count_homology/$count_all >= $opt{R}) {
-            return 1;
+        if ($count_homology/$count_all >= $opt{R}) { # >= 0.2 for example
+            return 1; # merge
         } else {
-            return 0;
+            return 0; # not merge
         }
     } else {
         print STDERR "WARNING: no links were evaluated\n";
-        return 1;
+        return 1; # merge
     }
 }
 
@@ -593,9 +593,9 @@ sub check_merge_by_homcluster {
     }
 
     if ($homcluster1 && $homcluster1 == $homcluster2) {
-        return 1;
+        return 1; # merge
     } else {
-        return 0;
+        return 0; # not merge
     }
 }
 
