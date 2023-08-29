@@ -5,6 +5,7 @@ use Getopt::Std;
 my $PROGRAM = basename $0;
 my $USAGE=
 "Usage: cat TABOUT | $PROGRAM -l LINK DCLST_FILE
+-h: use homcluster
 -H: use homology data in MySQL
 -r RATIO: ratio of segment coverage by homology
 -R RATIO: ratio of homology links
@@ -21,7 +22,7 @@ use DomRefine::Motif;
 
 ### Settings ###
 my %OPT;
-getopts('l:Hr:R:aL:', \%OPT);
+getopts('l:hHr:R:aL:', \%OPT);
 
 my $LINK = $OPT{l} || die $USAGE;
 
@@ -54,6 +55,27 @@ if (! -t) {
 	}
     }
     print STDERR "\n\n";
+}
+
+my %HOMCLUSTER = ();
+if ($OPT{h}) {
+    open(HOMCLUSTER, "homcluster") || die "$!";
+    while (<HOMCLUSTER>) {
+        chomp;
+        my @f = split(/ /, $_);
+        if (@f != 5) {
+            print STDERR "@f\n";
+        }
+        my $homcluster = $f[0];
+        my $gene = $f[1];
+        my $domain = $f[2];
+        my $start = $f[3];
+        my $end = $f[4];
+        $HOMCLUSTER{$gene}{$domain}{homcluster} = $homcluster;
+        $HOMCLUSTER{$gene}{$domain}{start} = $start;
+        $HOMCLUSTER{$gene}{$domain}{end} = $end;
+    }
+    close(HOMCLUSTER);
 }
 
 ### Read clusters ###
@@ -97,6 +119,11 @@ while (<LINK>) {
 	if ($flg_changed) {
 	    if (%HOM) {
 		if (check_merge_by_hom(\%MEMBER, @updated_target_cluster, \%HOM, r => $OPT{r}, R => $OPT{R}) == 0) {
+		    print STDERR "NOT_MERGED: @updated_target_cluster\n";
+		    next;
+		}
+            } elsif ($OPT{h}) {
+		if (check_merge_by_homcluster(\%MEMBER, @updated_target_cluster, \%HOMCLUSTER, r => $OPT{r}, R => $OPT{R}) == 0) {
 		    print STDERR "NOT_MERGED: @updated_target_cluster\n";
 		    next;
 		}
