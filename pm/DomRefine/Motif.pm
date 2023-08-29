@@ -842,7 +842,7 @@ sub count_overlap_with_homcluster {
     print STDERR "[$cluster]\n";
     my @sorted = sort {${$r_count_homcluster}{$b}<=>${$r_count_homcluster}{$a}} keys %{$r_count_homcluster};
     for my $key (@sorted) {
-        print STDERR "count for homcluster $key = ${$r_count_homcluster}{$key}\n";
+        print STDERR "count = ${$r_count_homcluster}{$key} for homcluster $key\n";
     }
 
     if (@sorted) {
