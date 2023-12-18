@@ -46,7 +46,7 @@ if (! -e "$CLUSTER.link") {
 
 ### Main ###
 my $GET_CLUSTER = "cat $CLUSTER.link | ignore_clusters.pl cluster.to_ignore";
-system "$GET_CLUSTER | sge_script_score.pl -r -i $CLUSTER -o $CLUSTER.merge_divide_test '$MERGE_DIVIDE' '$SCORE'";
+system "$GET_CLUSTER | shuffle.pl | sge_script_score.pl -r -i $CLUSTER -o $CLUSTER.merge_divide_test '$MERGE_DIVIDE' '$SCORE'";
 
 ### Post ###
 {
