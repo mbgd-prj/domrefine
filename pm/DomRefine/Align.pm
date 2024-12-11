@@ -2,6 +2,7 @@ package DomRefine::Align;
 use Exporter;
 @ISA = qw(Exporter);
 @EXPORT = qw(aligner create_alignment get_alignment_structure get_alignment_matrices
+             get_alignment_structure_from_file
              incremental_alignment
              read_alignment map_domains create_get_j create_get_pos_from_a
              fasta_to_sorted_tsv
