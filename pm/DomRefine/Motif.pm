@@ -570,6 +570,8 @@ sub check_merge_by_homcluster {
     my $homcluster1 = count_overlap_with_homcluster($r_member, $cluster1, $r_hom, \%count_homcluster1);
     my $homcluster2 = count_overlap_with_homcluster($r_member, $cluster2, $r_hom, \%count_homcluster2);
 
+    my $exec_merege = 0;
+
     # Output ratio into stderr as logs
     my $n_gene1 = keys %{${$r_member}{$cluster1}};
     my $n_gene2 = keys %{${$r_member}{$cluster2}};
@@ -589,14 +591,12 @@ sub check_merge_by_homcluster {
             print STDERR "\t";
             print STDERR $ratio1 * $ratio2;
             print STDERR "\n";
+            if ($ratio1 > 0.5 && $ratio2 > 0.5) {
+                $exec_merege = 1;
+            }
         }
     }
-
-    if ($homcluster1 && $homcluster1 == $homcluster2) {
-        return 1; # merge
-    } else {
-        return 0; # not merge
-    }
+    return $exec_merege;
 }
 
 ### Incomplete
