@@ -18,6 +18,7 @@
 # -B : use blastdbcmd
 # -S : allow spacing in a same domain
 
+# -h use homcluster in domrefine_stepwise_merge
 # -H homology_dir
 # -I homology_info
 # -P preclust_info
@@ -45,6 +46,7 @@ if [ -e "$DOMREFINE_DIR/bin" ] &&  [ -e "$DOMREFINE_DIR/bin_dev" ] &&  [ -e "$DO
     export DOMREFINE_SAVE_STATUS=0 # overwritten by -s
     export DOMREFINE_SKIP_MERGE_TEST=0 # overwritten by -M
     export DOMREFINE_FAST_MERGE=0 # overwritten by -F
+    export DOMREFINE_STEPWISE_MERGE_HOMCLUSTER=0 # overwritten by -h
     export DOMREFINE_RECURSIVE_MERGE=0 # overwritten by -r
     export DOMREFINE_CREATE_BOUNDARY=1 # overwritten by -C
     export DOMREFINE_ALIGN_REGION=0 # overwritten by -R
@@ -91,6 +93,7 @@ if [ -e "$DOMREFINE_DIR/bin" ] &&  [ -e "$DOMREFINE_DIR/bin_dev" ] &&  [ -e "$DO
 	    r ) DOMREFINE_RECURSIVE_MERGE=1;;
 	    M ) DOMREFINE_SKIP_MERGE_TEST=1;;
 	    F ) DOMREFINE_FAST_MERGE=1;;
+	    h ) DOMREFINE_STEPWISE_MERGE_HOMCLUSTER=1;;
 	    C ) DOMREFINE_CREATE_BOUNDARY=0;;
 	    R ) DOMREFINE_ALIGN_REGION=1;;
 	    H ) DOMREFINE_HOMOLOGY_DIR=$OPTARG;;

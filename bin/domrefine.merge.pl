@@ -158,7 +158,11 @@ sub merge {
 	my $pwd = `pwd`;
 	chomp($pwd);
 	my $large_queue = $ENV{DOMREFINE_LARGE_QUEUE} || "smpl";
-	my $stepwise_merge_command = "dom_merge_stepwise -r 0 -R 0.2 -l $pwd/${tmp_cluster}.link.to_merge $pwd/${tmp_cluster}";
+	my $stepwise_merge_command = "dom_merge_stepwise";
+        if ($ENV{DOMREFINE_STEPWISE_MERGE_HOMCLUSTER}) {
+            $stepwise_merge_command .= " -h";
+        }
+        $stepwise_merge_command .= " -r 0 -R 0.2 -l $pwd/${tmp_cluster}.link.to_merge $pwd/${tmp_cluster}";
 	my $command;
 	if ($ENV{DOMREFINE_HOMOLOGY_INFO}) {
 	    my $homology_info = $ENV{DOMREFINE_HOMOLOGY_INFO};
